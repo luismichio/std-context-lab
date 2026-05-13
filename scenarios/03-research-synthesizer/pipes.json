@@ -1,0 +1,27 @@
+{
+  "pipes": [
+    {
+      "name": "research-pipe",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "fetch",
+          "tool": "fetch",
+          "input_key": "url"
+        },
+        {
+          "cmd": "markitdown"
+        },
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["semantic", "--rate", "0.3"]
+        }
+      ]
+    }
+  ],
+  "servers": {
+    "fetch": {
+      "command": ["mcp-server-fetch.exe"]
+    }
+  }
+}

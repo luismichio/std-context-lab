@@ -1,0 +1,24 @@
+{
+  "pipes": [
+    {
+      "name": "shadow-echo-pipe",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "everything",
+          "tool": "echo",
+          "input_key": "message"
+        },
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["logs"]
+        }
+      ]
+    }
+  ],
+  "servers": {
+    "everything": {
+      "command": ["node", "../../scenarios/shared_mcps/node_modules/@modelcontextprotocol/server-everything/dist/index.js"]
+    }
+  }
+}

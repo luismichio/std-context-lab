@@ -1,0 +1,1 @@
+{"decision": "deny", "reason": "--- [Context-Pipe: standard-distill] ---\n\ud83d\udcca Context: 0.0% Reduction (0.0KB -> 0.0KB)\n\u26a1 Latency: 320.4ms\nNodes: semantic-sift-cli\n-----------------------------\nHello world\n\n--- [Context-Pipe: Native Execution] ---"}

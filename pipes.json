@@ -1,0 +1,301 @@
+{
+  "mappings": [
+    {
+      "trigger": "size:>1000",
+      "pipe": "standard-distill"
+    },
+    {
+      "trigger": "default",
+      "pipe": "standard-distill"
+    }
+  ],
+  "pipes": [
+    {
+      "name": "standard-distill",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "logs"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "semantic-refinery",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "semantic",
+            "--rate",
+            "0.5"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "research-pipe",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "fetch",
+          "tool": "fetch",
+          "input_key": "url"
+        },
+        {
+          "cmd": "markitdown"
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "semantic",
+            "--rate",
+            "0.3"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "multi-modal-pipe",
+      "nodes": [
+        {
+          "cmd": "markitdown"
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "semantic",
+            "--rate",
+            "0.3"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "raw-db-pipe",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "sqlite",
+          "tool": "read_query",
+          "input_key": "query"
+        }
+      ]
+    },
+    {
+      "name": "sifted-db-pipe",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "sqlite",
+          "tool": "read_query",
+          "input_key": "query"
+        },
+        {
+          "cmd": "yq",
+          "args": [
+            "-o",
+            "json",
+            ".[] | .event_type"
+          ]
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "logs"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "e2e-supply-chain",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "fetch",
+          "tool": "fetch",
+          "input_key": "url"
+        },
+        {
+          "cmd": "node",
+          "args": [
+            "scenarios/shared_mcps/node_modules/prettier/bin/prettier.cjs",
+            "--parser",
+            "markdown"
+          ]
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "semantic",
+            "--rate",
+            "0.3"
+          ],
+          "tee": {
+            "sink": "file",
+            "path": "scenarios/07-mental-supply-chain/.tee/snapshot_before_sift.md",
+            "mode": "overwrite"
+          }
+        },
+        {
+          "cmd": "node",
+          "args": [
+            "scenarios/07-mental-supply-chain/auditor_script.js"
+          ]
+        },
+        {
+          "cmd": "node",
+          "args": [
+            "scenarios/07-mental-supply-chain/ship_it_mock.js"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "adaptive-pipe",
+      "nodes": [
+        {
+          "cmd": "python",
+          "args": [
+            "scenarios/09-adaptive-pressure/pressure_gauge.py"
+          ]
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "semantic",
+            "--rate",
+            "${SIFT_RATE}"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "viz-pipe",
+      "nodes": [
+        {
+          "cmd": "python",
+          "args": [
+            "scenarios/11-observability-viz/pipes_to_mermaid.py",
+            "pipes.json"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "heart-attack-pipe",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "logs"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gauntlet-pipe",
+      "nodes": [
+        {
+          "cmd": "missing-tool-99",
+          "optional": true,
+          "help_msg": "Please install the phantom node manager."
+        },
+        {
+          "cmd": "python",
+          "args": [
+            "scenarios/13-resiliency-gauntlet/bad_syntax.py"
+          ],
+          "optional": true,
+          "help_msg": "Fix your syntax first!"
+        },
+        {
+          "cmd": "python",
+          "args": [
+            "scenarios/13-resiliency-gauntlet/forever_sleep.py"
+          ],
+          "timeout": 2,
+          "optional": true,
+          "help_msg": "Wake up the sleeper."
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "logs"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "security-gateway",
+      "nodes": [
+        {
+          "cmd": "python",
+          "args": [
+            "scenarios/14-security-black-hole/pii_scrubber.py"
+          ]
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "logs"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "inner-distiller",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "logs"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "recursive-pipe",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\mcp-pipe.exe",
+          "args": ["run", "inner-distiller"]
+        }
+      ]
+    },
+    {
+      "name": "corruption-pipe",
+      "nodes": [
+        {
+          "cmd": "python",
+          "args": ["scenarios/16-protocol-violation-stress/bad_actor.py"]
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["logs"]
+        }
+      ]
+    }
+    ],
+  "servers": {
+    "fetch": {
+      "command": [
+        "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\mcp-server-fetch.exe"
+      ]
+    },
+    "everything": {
+      "command": [
+        "node",
+        "scenarios/shared_mcps/node_modules/@modelcontextprotocol/server-everything/dist/index.js"
+      ]
+    },
+    "sqlite": {
+      "command": [
+        "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\mcp-server-sqlite.exe",
+        "--db-path",
+        "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\scenarios\\10-structured-data-auditor\\mock_telemetry.db"
+      ]
+    }
+  }
+}

@@ -1,0 +1,4 @@
+[
+  {"type": "mcp", "server": "everything", "tool": "echo", "input_key": "message"},
+  {"cmd": "semantic-sift-cli", "args": ["logs"]}
+]

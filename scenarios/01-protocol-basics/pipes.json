@@ -1,0 +1,17 @@
+{
+  "pipes": [
+    {
+      "name": "basics-pipe",
+      "nodes": [
+        {
+          "cmd": "node",
+          "args": ["transformer.js"]
+        },
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["logs"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "pipes": [
+    {
+      "name": "e2e-supply-chain",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "fetch",
+          "tool": "fetch",
+          "input_key": "url"
+        },
+        {
+          "cmd": "markitdown"
+        },
+        {
+          "cmd": "findstr",
+          "args": ["/V", "SOMETHING_TO_EXCLUDE_NEVER_MATCHES"]
+        },
+        {
+          "cmd": "node",
+          "args": ["../../scenarios/shared_mcps/node_modules/prettier/bin/prettier.cjs", "--parser", "markdown"]
+        },
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["semantic", "--rate", "0.3"],
+          "tee": {
+            "sink": "file",
+            "path": ".tee/snapshot_before_sift.md",
+            "mode": "overwrite"
+          }
+        },
+        {
+          "cmd": "node",
+          "args": ["auditor_script.js"]
+        },
+        {
+          "cmd": "node",
+          "args": ["ship_it_mock.js"]
+        }
+      ]
+    }
+  ],
+  "servers": {
+    "fetch": {
+      "command": ["..\\..\\.venv\\Scripts\\mcp-server-fetch.exe"]
+    }
+  }
+}

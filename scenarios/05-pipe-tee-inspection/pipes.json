@@ -1,0 +1,22 @@
+{
+  "pipes": [
+    {
+      "name": "tee-pipe",
+      "nodes": [
+        {
+          "cmd": "findstr",
+          "args": ["ERROR"]
+        },
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["logs"],
+          "tee": {
+            "sink": "file",
+            "path": ".tee/snapshot_{tool_name}_{iso_date}.log",
+            "mode": "append"
+          }
+        }
+      ]
+    }
+  ]
+}

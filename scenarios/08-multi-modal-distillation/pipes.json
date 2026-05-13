@@ -1,0 +1,129 @@
+{
+  "mappings": [
+    {
+      "trigger": "size:>1000",
+      "pipe": "standard-distill"
+    },
+    {
+      "trigger": "default",
+      "pipe": "standard-distill"
+    }
+  ],
+  "pipes": [
+    {
+      "name": "standard-distill",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "logs"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "semantic-refinery",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "semantic",
+            "--rate",
+            "0.5"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "research-pipe",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "fetch",
+          "tool": "fetch",
+          "input_key": "url"
+        },
+        {
+          "cmd": "markitdown"
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "semantic",
+            "--rate",
+            "0.3"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "multi-modal-pipe",
+      "nodes": [
+        {
+          "cmd": "markitdown"
+        },
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["semantic", "--rate", "0.3"]
+        }
+      ]
+    },
+    {
+      "name": "e2e-supply-chain",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "fetch",
+          "tool": "fetch",
+          "input_key": "url"
+        },
+        {
+          "cmd": "node",
+          "args": [
+            "scenarios/shared_mcps/node_modules/prettier/bin/prettier.cjs",
+            "--parser",
+            "markdown"
+          ]
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": [
+            "semantic",
+            "--rate",
+            "0.3"
+          ],
+          "tee": {
+            "sink": "file",
+            "path": "scenarios/07-mental-supply-chain/.tee/snapshot_before_sift.md",
+            "mode": "overwrite"
+          }
+        },
+        {
+          "cmd": "node",
+          "args": [
+            "scenarios/07-mental-supply-chain/auditor_script.js"
+          ]
+        },
+        {
+          "cmd": "node",
+          "args": [
+            "scenarios/07-mental-supply-chain/ship_it_mock.js"
+          ]
+        }
+      ]
+    }
+  ],
+  "servers": {
+    "fetch": {
+      "command": [
+        "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\mcp-server-fetch.exe"
+      ]
+    },
+    "everything": {
+      "command": [
+        "node",
+        "scenarios/shared_mcps/node_modules/@modelcontextprotocol/server-everything/dist/index.js"
+      ]
+    }
+  }
+}

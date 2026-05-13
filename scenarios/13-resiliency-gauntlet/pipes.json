@@ -1,0 +1,31 @@
+{
+  "pipes": [
+    {
+      "name": "gauntlet-pipe",
+      "nodes": [
+        {
+          "cmd": "missing-tool-99",
+          "optional": true,
+          "help_msg": "Please install the phantom node manager."
+        },
+        {
+          "cmd": "python",
+          "args": ["bad_syntax.py"],
+          "optional": true,
+          "help_msg": "Fix your syntax first!"
+        },
+        {
+          "cmd": "python",
+          "args": ["forever_sleep.py"],
+          "timeout": 2,
+          "optional": true,
+          "help_msg": "Wake up the sleeper."
+        },
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["logs"]
+        }
+      ]
+    }
+  ]
+}

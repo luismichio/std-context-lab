@@ -1,0 +1,17 @@
+{
+  "pipes": [
+    {
+      "name": "security-gateway",
+      "nodes": [
+        {
+          "cmd": "python",
+          "args": ["pii_scrubber.py"]
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["logs"]
+        }
+      ]
+    }
+  ]
+}

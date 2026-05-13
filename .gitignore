@@ -1,0 +1,16 @@
+.venv/
+.gemini/
+target_repos/
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.python-version
+.pipe_telemetry.json
+.pipe_identity
+.tee/
+node_modules/
+**/node_modules/
+
+# Project Specific (Context-Pipe)
+.pipe_cache/
