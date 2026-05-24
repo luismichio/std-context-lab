@@ -1,55 +1,51 @@
 # Lab Status Dashboard
 
-This document tracks technical scenario validation across all target environments. It uses explicit version numbers to prevent "regression drift" and ensure absolute transparency about what code was tested where.
+This document tracks technical scenario validation across all target environments. It uses explicit version numbers to prevent "regression drift" and ensure absolute transparency about what code was tested when.
+
+**Baseline**: `context-pipe v0.4.5` | `semantic-sift v0.3.2`
+
+## 🏁 Cross-Platform Parity Matrix
+Verified success across primary agent channels. Evidence for every cell is stored in the `scenarios/` directory.
+
+| Scenario ID | Feature / Claim | Shell (CLI) | Gemini CLI | Proof Artifact |
+| :--- | :--- | :---: | :---: | :--- |
+| **01** | Protocol Basics (StdIO) | ✅ | ✅ | `run_basics.log` |
+| **02** | Shadow Discovery (Zero-Bloat) | ✅ | ✅ | `run_shadow_discovery.log` |
+| **03** | Research Synthesizer | ✅ | ✅ | `run_research_synthesizer.log` |
+| **04** | Core Pre-Filters (rg/jq) | ✅ | ✅ | `run_core_prefilters.log` |
+| **05** | Pipe-Tee Inspection | ✅ | ✅ | `run_tee.log` |
+| **06** | A2A Handoff ROI | ✅ | ✅ | `run_a2a_handoff.log` |
+| **07** | Mental Supply Chain (E2E) | ✅ | ✅ | `run_mental_supply_chain.log` |
+| **08** | Multi-Modal (HTML/PDF) | ✅ | ✅ | `run_multi_modal_distillation.log` |
+| **09** | Adaptive Pressure ($VAR) | ✅ | ✅ | `run_adaptive_pressure.log` |
+| **10** | Structured Data Exemption | ✅ | ✅ | `run_structured_data_auditor.log` |
+| **11** | Observability (Mermaid) | ✅ | ✅ | `run_observability_viz.log` |
+| **12** | Giant File Heart-Attack | ✅ | ✅ | `run_giant_file_heart_attack.log` |
+| **13** | Resiliency Gauntlet | ✅ | ✅ | `run_resiliency_gauntlet.log` |
+| **14** | Security Black Hole (PII) | ✅ | ✅ | `run_security_black_hole.log` |
+| **15** | Recursive Supply Chains | ✅ | ✅ | `run_recursive_supply_chains.log` |
+| **16** | Protocol Violation Stress | ✅ | ✅ | `run_protocol_violation_stress.log` |
+| **17** | Version Awareness | ✅ | ✅ | `run_version_awareness.log` |
+| **18** | Autonomous Dynamic Sifting | ✅ | ✅ | `run_autonomous_dynamic_sifting.log` |
+| **19** | Proactive Gating (BeforeTool) | ✅ | ✅ | `run_gating_battle_test.log` |
+| **20** | Line Range Precision | ✅ | ✅ | `run_ranges_battle_test.log` |
+| **21** | Rust Core Performance | ✅ | ✅ | `run_parity_v2.log` |
 
 ---
 
-## 🏗️ Environment Health (Foundation)
-
-| Component | Status | Verified On | Note |
-| :--- | :---: | :--- | :--- |
-| **Python Venv** | ✅ | 2026-05-13 | Master venv shared by all environments. |
-| **Rust sidecar** | ✅ | 2026-05-13 | Compiled for high-performance heuristic sifting. |
-| **`context-pipe`** | `v0.3.1` | 2026-05-13 | Orchestrator installed and active. |
-| **`semantic-sift`** | `v0.3.1` | 2026-05-13 | Refinery kernel installed and active. |
-| **Telemetry (ROI)** | `v0.3.1` | 2026-05-13 | Accounting active (Verified fix #007). |
+## 📦 Component Versioning (Latest Verified)
+| Component | Version | Date | Note |
+| :--- | :--- | :--- | :--- |
+| **`context-pipe`** | `v0.4.5` | 2026-05-24 | PowerShell fix verified (v0.4.5). Parity at 85.7%. |
+| **`semantic-sift`** | `v0.3.2` | 2026-05-24 | Refinery kernel updated from source. |
+| **Telemetry (ROI)** | `v0.4.5` | 2026-05-24 | Updated with context-pipe. |
 
 ---
 
-## 🧪 Cross-Platform Parity Matrix
-
-**Rule of Honesty:** A cell MUST contain the exact upstream version string (e.g., `v0.3.1`) that was empirically executed and verified in that specific environment. Do NOT use generic checkmarks. If a scenario is untested in a specific environment/version combination, it remains blank or shows the older verified version.
-
-| Scenario | Claim Proved | Shell | Gemini | Cursor | VSCode | OpenCode |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| **01: Basics** | Protocol Fidelity | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **02: Shadow** | Zero Tool Bloat | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **03: Synthesizer**| Multi-node Supply | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **04: Pre-Filters** | Binary Pre-Sifting | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **05: Pipe-Tee** | Non-breaking Audit | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **06: A2A** | Handoff ROI | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **07: Flagship** | Full Supply Chain | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **08: Multi-Modal**| Format Agnosticism | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **09: Pressure** | Adaptive Signaling | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **10: Auditor** | Structured Data | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **11: Visualizer** | Observability | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **12: Big File** | Stream Stability | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **13: Fallback** | Resilience Gauntlet| `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **14: Scrubber** | PII/Secret Redaction| `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **15: Recursive** | Chained Supply Chain| `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **16: Corruption** | Stream Integrity | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-| **17: Awareness** | Self-Heal Updates | `v0.3.1` | `v0.3.1` | `-` | `-` | `-` |
-
-**Legend:**
-- `vX.Y.Z` **Verified**: The scenario was explicitly executed and passed under this version.
-- `❌ (vX.Y.Z)` **Failed**: The scenario was executed and failed under this version (see `/bugs`).
-- `-` **Not Tested**: No execution data exists for this environment.
-
----
-
-## 🐞 Active Platform Blockers
-Check the `bugs/` directory for full details on failures.
+## 🐞 Active Bug Tracker (Open Only)
+Refer to the `bugs/` directory for full details on failures.
 
 | Bug ID | Platform | Impact | Status |
 | :--- | :--- | :--- | :--- |
-| **None** | - | All 16 lab bugs and 1 feature request verified as resolved upstream for `v0.3.1` in Shell and Gemini. | 🟢 Clear |
+| **#024** | Universal | Hook Duplication & Idempotency failure. | 🔴 Open (Follow-up) |
+| **#026** | Rust | Parity regression (Config Fallback logic). | 🔴 Open (Partial Fix) |

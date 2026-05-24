@@ -11,6 +11,10 @@ __pycache__/
 .tee/
 node_modules/
 **/node_modules/
+opencode.json
 
 # Project Specific (Context-Pipe)
 .pipe_cache/
+
+# Project Specific (Context-Pipe)
+.pipe_telemetry.jsonl

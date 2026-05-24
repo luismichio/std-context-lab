@@ -1,0 +1,14 @@
+{
+  "mcpServers": {},
+  "pipes": [
+    {
+      "name": "stress-test",
+      "description": "Multi-node chain using native binaries",
+      "nodes": [
+        {"cmd": "findstr", "args": ["."]},
+        {"cmd": "findstr", "args": ["."]},
+        {"cmd": "findstr", "args": ["."]}
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 # Evidence: Scenario 01 (Protocol Basics)
 
-**Verified On:** 2026-05-18
-**Baseline:** `context-pipe v0.4.0` | `semantic-sift v0.3.2`
+**Verified On:** 2026-05-24
+**Baseline:** `context-pipe v0.4.3` | `semantic-sift v0.3.2`
 
 ## Verification Command
 ```powershell
@@ -9,7 +9,9 @@ cd scenarios/01-protocol-basics
 Get-Content sample.log | mcp-pipe run basics-pipe
 ```
 
-## Captured Evidence (Stdout)
+## Captured Evidence (Raw)
+*   **Log File**: [run_basics.log](run_basics.log)
+*   **Transcript Snippet**:
 ```log
 [LAB-TEST-TRANSFORMED] [] INFO: Connection established to remote node.
 [LAB-TEST-TRANSFORMED] [] WARN: Latency spike detected on backbone interface.

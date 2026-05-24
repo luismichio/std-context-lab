@@ -12,6 +12,7 @@
   "pipes": [
     {
       "name": "standard-distill",
+      "description": "General-purpose log and text distillation using the high-speed Rust heuristic engine. Ideal for massive, unstructured files.",
       "nodes": [
         {
           "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
@@ -23,6 +24,7 @@
     },
     {
       "name": "semantic-refinery",
+      "description": "High-fidelity neural sifting. Compresses complex reasoning and code at a default 50% rate.",
       "nodes": [
         {
           "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
@@ -36,6 +38,7 @@
     },
     {
       "name": "research-pipe",
+      "description": "Fetches a URL, converts the HTML to Markdown, and distills the content into a dense technical summary.",
       "nodes": [
         {
           "type": "mcp",
@@ -58,6 +61,7 @@
     },
     {
       "name": "multi-modal-pipe",
+      "description": "Converts multi-modal formats (PDF, DOCX) to Markdown and distills them.",
       "nodes": [
         {
           "cmd": "markitdown"
@@ -74,6 +78,7 @@
     },
     {
       "name": "raw-db-pipe",
+      "description": "Executes a raw SQL query against the mock telemetry SQLite database without any distillation.",
       "nodes": [
         {
           "type": "mcp",
@@ -85,6 +90,7 @@
     },
     {
       "name": "sifted-db-pipe",
+      "description": "Executes a SQL query, flattens the JSON using yq to extract event types, and distills the output.",
       "nodes": [
         {
           "type": "mcp",
@@ -110,6 +116,7 @@
     },
     {
       "name": "e2e-supply-chain",
+      "description": "Flagship mental supply chain. Fetches web content, formats it, takes a snapshot, injects audit logic, and ships it.",
       "nodes": [
         {
           "type": "mcp",
@@ -154,6 +161,7 @@
     },
     {
       "name": "adaptive-pipe",
+      "description": "Demonstrates adaptive window pressure by passing dynamic environment variables to the neural refinery.",
       "nodes": [
         {
           "cmd": "python",
@@ -173,6 +181,7 @@
     },
     {
       "name": "viz-pipe",
+      "description": "Parses pipes.json and generates Mermaid flowcharts for architectural observability.",
       "nodes": [
         {
           "cmd": "python",
@@ -185,6 +194,7 @@
     },
     {
       "name": "heart-attack-pipe",
+      "description": "High-speed ingestion pipe for stress-testing 50MB+ files. Includes memory truncation guards.",
       "nodes": [
         {
           "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
@@ -196,6 +206,7 @@
     },
     {
       "name": "gauntlet-pipe",
+      "description": "Resiliency pipe that cascades through missing binaries, timeouts, and syntax errors before succeeding via optional node schemas.",
       "nodes": [
         {
           "cmd": "missing-tool-99",
@@ -229,6 +240,7 @@
     },
     {
       "name": "security-gateway",
+      "description": "Acts as a Zero-Trust gateway by redacting PII, AWS Keys, and Credit Cards from streams before LLM ingestion.",
       "nodes": [
         {
           "cmd": "python",
@@ -246,6 +258,7 @@
     },
     {
       "name": "inner-distiller",
+      "description": "A simple base pipe used for testing encapsulation and nested orchestration.",
       "nodes": [
         {
           "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
@@ -257,6 +270,7 @@
     },
     {
       "name": "recursive-pipe",
+      "description": "Tests pipeline encapsulation by recursively calling inner-distiller as a node, triggering the Echo Guard.",
       "nodes": [
         {
           "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\mcp-pipe.exe",
@@ -266,6 +280,7 @@
     },
     {
       "name": "corruption-pipe",
+      "description": "Tests stream integrity by intercepting and safely discarding non-UTF8 binary garbage from a bad actor node.",
       "nodes": [
         {
           "cmd": "python",
@@ -277,7 +292,7 @@
         }
       ]
     }
-    ],
+  ],
   "servers": {
     "fetch": {
       "command": [

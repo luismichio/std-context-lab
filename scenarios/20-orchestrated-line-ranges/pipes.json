@@ -1,0 +1,14 @@
+{
+  "pipes": [
+    {
+      "name": "standard-distill",
+      "description": "Passthrough for testing",
+      "nodes": [
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["semantic", "--rate", "1.0"]
+        }
+      ]
+    }
+  ]
+}
