@@ -1,0 +1,82 @@
+{
+  "servers": {
+    "noisy-echo-server": {
+      "command": "C:/Users/luism/Workbench/GitHub/std-context-lab/.venv/Scripts/python.exe",
+      "args": ["C:/Users/luism/Workbench/GitHub/std-context-lab/scenarios/27-mcp-banner-tolerance/mock_noisy_server.py", "--banners", "3"],
+      "verbose": false
+    },
+    "noisy-echo-server-verbose": {
+      "command": "C:/Users/luism/Workbench/GitHub/std-context-lab/.venv/Scripts/python.exe",
+      "args": ["C:/Users/luism/Workbench/GitHub/std-context-lab/scenarios/27-mcp-banner-tolerance/mock_noisy_server.py", "--banners", "3"],
+      "verbose": true
+    },
+    "overflow-banner-server": {
+      "command": "C:/Users/luism/Workbench/GitHub/std-context-lab/.venv/Scripts/python.exe",
+      "args": ["C:/Users/luism/Workbench/GitHub/std-context-lab/scenarios/27-mcp-banner-tolerance/mock_noisy_server.py", "--banners", "51"],
+      "verbose": false
+    },
+    "clean-echo-server": {
+      "command": "C:/Users/luism/Workbench/GitHub/std-context-lab/.venv/Scripts/python.exe",
+      "args": ["C:/Users/luism/Workbench/GitHub/std-context-lab/scenarios/27-mcp-banner-tolerance/mock_noisy_server.py", "--banners", "0"],
+      "verbose": false
+    }
+  },
+  "pipes": [
+    {
+      "name": "banner-pipe",
+      "description": "MCP node against noisy-echo-server — tests silent banner skip.",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "noisy-echo-server",
+          "tool": "echo",
+          "input_key": "text"
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic"]
+        }
+      ]
+    },
+    {
+      "name": "banner-verbose-pipe",
+      "description": "Same as banner-pipe but verbose:true — banner lines surface to stderr.",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "noisy-echo-server-verbose",
+          "tool": "echo",
+          "input_key": "text"
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic"]
+        }
+      ]
+    },
+    {
+      "name": "banner-overflow-pipe",
+      "description": "51-banner server — must hit 50-line safety limit and return structured error.",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "overflow-banner-server",
+          "tool": "echo",
+          "input_key": "text"
+        }
+      ]
+    },
+    {
+      "name": "clean-mcp-pipe",
+      "description": "Clean server with no banner — baseline for parity.",
+      "nodes": [
+        {
+          "type": "mcp",
+          "server": "clean-echo-server",
+          "tool": "echo",
+          "input_key": "text"
+        }
+      ]
+    }
+  ]
+}

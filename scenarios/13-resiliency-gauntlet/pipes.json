@@ -26,6 +26,37 @@
           "args": ["logs"]
         }
       ]
+    },
+    {
+      "name": "required-timeout-pipe",
+      "description": "Timeout on a REQUIRED node (no optional). Must halt with --- [Context-Pipe: Timeout] --- instead of continuing.",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys,time; sys.stdin.read(1); time.sleep(30)"],
+          "timeout": 2
+        },
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["logs"]
+        }
+      ]
+    },
+    {
+      "name": "optional-condition-pipe",
+      "description": "Node with BOTH optional:true and condition. Tests interaction: condition false -> skip entirely; condition true + exit non-zero -> optional bypass.",
+      "nodes": [
+        {
+          "cmd": "python",
+          "args": ["-c", "import sys; sys.exit(1)"],
+          "optional": true,
+          "condition": "size:>5000"
+        },
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["logs"]
+        }
+      ]
     }
   ]
 }

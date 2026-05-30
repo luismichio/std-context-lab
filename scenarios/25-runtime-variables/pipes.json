@@ -1,0 +1,73 @@
+{
+  "pipes": [
+    {
+      "name": "var-rate-pipe",
+      "description": "Sifting pipe with runtime-injectable compression rate. Default: 0.5.",
+      "vars": {
+        "RATE": "0.5"
+      },
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "${RATE}"]
+        }
+      ]
+    },
+    {
+      "name": "var-missing-pipe",
+      "description": "References ${REQUIRED_VAR} with no default — must fail-fast with a clear error.",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "${REQUIRED_VAR}"]
+        }
+      ]
+    },
+    {
+      "name": "var-multi-pipe",
+      "description": "Multiple ${VAR} substitutions in a single node args list.",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.stdout.write('${PREFIX}:' + sys.stdin.read().strip() + ':${SUFFIX}')"]
+        }
+      ]
+    },
+    {
+      "name": "var-env-fallback-pipe",
+      "description": "References ${FALLBACK_RATE} — no pipe default, must fall back to os.environ.",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "${FALLBACK_RATE}"]
+        }
+      ]
+    },
+    {
+      "name": "var-empty-default-fail-pipe",
+      "description": "Var declared with empty default → must fail-fast with a clear error BEFORE any node spawns. This tests the positive path of REPORT_038's fail-fast mechanism.",
+      "vars": {
+        "TOKEN": ""
+      },
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "0.5"]
+        }
+      ]
+    },
+    {
+      "name": "var-empty-default-pass-pipe",
+      "description": "Same empty-default declaration but with --var TOKEN=abc provided. Must succeed.",
+      "vars": {
+        "TOKEN": ""
+      },
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "0.5"]
+        }
+      ]
+    }
+  ]
+}

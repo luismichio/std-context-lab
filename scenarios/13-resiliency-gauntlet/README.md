@@ -24,3 +24,20 @@ echo "[10:00] ERROR: survive the gauntlet" | mcp-pipe run gauntlet-pipe -v
 
 ## Resolved Bug
 **Verified & Closed Bug #015**: The orchestrator is no longer strictly 'Fail-Fast' and can bypass optional node failures.
+
+## Gap Tests Added 2026-05-30
+
+### Test G — Timeout on required node (vs optional)
+- **Pipe:** `required-timeout-pipe`
+- **Scenario:** Node sleeps 30s with `"timeout": 2` (no `optional: true`).
+- **Bug found (REPORT_039):** `node.get("timeout")` is never read by the orchestrator. Only `PIPE_NODE_TIMEOUT_MS` env var is respected.
+- **Workaround test:** `PIPE_NODE_TIMEOUT_MS=2000 mcp-pipe run required-timeout-pipe` — halts cleanly with `--- [Context-Pipe: Timeout] ---`.
+
+### Test H — `optional: true` + `condition` interaction
+- **Pipe:** `optional-condition-pipe`
+- **Subtest H1:** Small input → `condition: "size:>5000"` false → node skipped entirely. Sift runs.
+- **Subtest H2:** 10KB input → condition true → node exits 1 → `optional: true` bypasses → sift runs on original input.
+- **Verdict:** Both paths work correctly.
+
+### False pass discovered
+`forever_sleep.py` reads **1 character** and exits immediately — it never sleeps. The gauntlet-pipe's `[TIMEOUT]` claim was incorrect. The per-node `"timeout"` field is entirely ignored by the orchestrator (REPORT_039).

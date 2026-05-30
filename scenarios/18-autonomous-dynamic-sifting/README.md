@@ -20,3 +20,12 @@ mcp-pipe run-dynamic '[{"cmd": "grep", "args": ["needle"]}, {"cmd": "semantic-si
 - **JIT Assembly**: ✅ The orchestrator successfully interpreted an ad-hoc JSON graph and executed it.
 - **Shell Synergy**: ✅ The `allow_shell` flag correctly permitted the use of `grep` as a pre-filter.
 - **Autonomous Recovery**: ✅ Proved that agents can bypass static configuration to find specific signals in massive data.
+
+## Phase 11 Feature Parity via run-dynamic (2026-05-30)
+All Phase 11 features (`type:"validator"` + `branches`, `condition`, `id`+`next`) are supported by `run_dynamic_pipe` because node schemas pass through unmodified to `run_pipe`. Verified:
+
+| Feature | Dynamic | pipes.json |
+|---|---|---|
+| `type:"validator"` + `branches` | ✅ (exit 0 → sift) | ✅ (S24) |
+| `condition` (size, artifact, contains) | ✅ (first node skipped) | ✅ (S23) |
+| `id` + `next` explicit jump | ✅ (skip B) | ✅ (S24) |

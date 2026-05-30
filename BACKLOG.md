@@ -9,7 +9,48 @@ All technical claims MUST be verified via two channels to ensure platform parity
 1. **Shell Channel**: Using the `mcp-pipe` terminal tool (Pure Standard I/O).
 2. **Agent Channel**: Using the AI assistant's MCP tools (IDE/Client Integration).
 
-## 🎯 Up Next (Phase 2: Operational Hardening)
+## 🎯 Up Next (Phase 3: New Feature Validation — v0.5.0)
+
+### Scenario 22: Pipe Transparency Layer (Phase 9)
+- [x] Verify `logging` block in `pipes.json` emits `[PIPE]` lines to `stderr`.
+- [x] Verify `compact` vs `verbose` log levels.
+- [x] Verify custom prefix override.
+- [x] Verify env var fallback (`PIPE_LOG_LEVEL`, `PIPE_LOG_PREFIX`).
+- [x] Verify per-pipe wins over env var.
+- [x] Verify Rust parity (`cpipe`).
+
+### Scenario 23: Conditional Branching — `condition` Predicates (Phase 11A)
+- [x] Verify `size:>N` and `size:<N` skip/execute logic.
+- [x] Verify `artifact:missing` and `artifact:exists` predicates.
+- [x] Verify `contains:<string>` predicate.
+- [x] Verify unknown predicate fails-open (warn + run).
+- [x] Verify Rust parity.
+
+### Scenario 24: DAG Validator Nodes + Loop Guard (Phase 11B/C)
+- [x] Verify `type: "validator"` routes by exit code to `branches`.
+- [x] Verify `id` + `next` explicit DAG jumps (node skip).
+- [x] Verify 100-step loop guard triggers with `--- [Context-Pipe: Loop Guard] ---`.
+- [x] Verify `artifact-fork-pipe`: true two-route fork via validator (file exists → sift, file missing → create). Mutual exclusion confirmed.
+
+### Scenario 25: Runtime Variable Injection (Phase 12A)
+- [x] Verify `--var KEY=VALUE` substitution in `cmd` and `args`.
+- [x] Verify pipe `vars` defaults block.
+- [x] Verify caller `--var` overrides pipe default.
+- [x] Verify missing variable fail-fast error.
+- [x] Verify empty-default fail-fast works (positive path of REPORT_038 cap).
+- [x] Verify `--manifest` + `--var` combined.
+- [x] Verify `os.environ` fallback for undeclared vars.
+- [ ] Verify agent channel via `pipe_run` vars param. (pending pi reload)
+
+### Scenario 26: Run Manifests (Phase 12B)
+- [x] Verify `--manifest <path>` creates JSON artifact with correct schema.
+- [x] Verify manifest records `status: "fail"` for broken pipe.
+- [x] Verify `"manifest": "auto"` generates `.pipe_cache/<name>-<iso>.json`.
+- [x] Verify no manifest created by default.
+
+### Scenario 27: MCP Banner Tolerance (Phase 13)
+- [x] ALL TESTS UNBLOCKED → **REPORT_041** ✅ Closed in v0.5.5.`_run_mcp_node` no longer hangs. MCP SDK logs JSON parse warnings for banner lines but pipe completes successfully.
+
 ## 📅 Later (Future Explorations)
 
 ### IDE Integration Parity
@@ -18,6 +59,12 @@ All technical claims MUST be verified via two channels to ensure platform parity
 - [ ] Test scenario execution within VSCode.
 
 ## ✅ Done
+
+- [x] **Gap tests 2026-05-30**: 
+  - S13: Timeout via env var on required node; optional+condition interaction; discovered false pass in original timeout test (forever_sleep.py never sleeps); **filed REPORT_039** (node.timeout ignored by orchestrator)
+  - S18: Verified run-dynamic supports Phase 11 features (validator, condition, id+next all work)
+  - S24: Validator cycle loop guard (universal); nested validator in branch_sequences; two-route artifact fork
+  - S25: Empty-default fail-fast (positive path of REPORT_038); manifest+var combined
 
 - [x] Scenario 16: Protocol Violation Stress
     - [x] Built a "Bad Actor" node that outputs binary garbage.

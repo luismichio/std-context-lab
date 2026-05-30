@@ -1,0 +1,4 @@
+[PIPE] trigger:cli:run | → C:\Users\luism\Workbench\GitHub\std-context-lab\.venv\Scripts\semantic-sift-cli.exe
+[PIPE] trigger:cli:run | ✓ C:\Users\luism\Workbench\GitHub\std-context-lab\.venv\Scripts\semantic-sift-cli.exe | 32 → 183 chars (+151 | 471.9%) | 2.9s
+[PIPE] trigger:cli:run | → C:\Users\luism\Workbench\GitHub\std-context-lab\.venv\Scripts\semantic-sift-cli.exe
+[PIPE] trigger:cli:run | ✓ C:\Users\luism\Workbench\GitHub\std-context-lab\.venv\Scripts\semantic-sift-cli.exe | 183 → 198 chars (+15 | 8.2%) | 1.3s

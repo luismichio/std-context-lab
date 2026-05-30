@@ -1,0 +1,70 @@
+{
+  "pipes": [
+    {
+      "name": "condition-size-gate",
+      "description": "Sifting node only fires when input exceeds 5000 chars. Small inputs pass through untouched.",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "0.5"],
+          "condition": "size:>5000"
+        }
+      ]
+    },
+    {
+      "name": "condition-size-small-gate",
+      "description": "Sifting node only fires when input is BELOW 500 chars.",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["logs"],
+          "condition": "size:<500"
+        }
+      ]
+    },
+    {
+      "name": "condition-artifact-pipe",
+      "description": "Node skipped if artifact already exists on disk — prevents double-processing.",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic"],
+          "condition": "artifact:missing:.cache/test-artifact.json"
+        }
+      ]
+    },
+    {
+      "name": "condition-artifact-exists-pipe",
+      "description": "Node only fires if artifact IS present on disk.",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic"],
+          "condition": "artifact:exists:.cache/test-artifact.json"
+        }
+      ]
+    },
+    {
+      "name": "condition-contains-error-pipe",
+      "description": "Heavy sifting node only fires when input contains the string ERROR.",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "0.3"],
+          "condition": "contains:ERROR"
+        }
+      ]
+    },
+    {
+      "name": "condition-fail-open-pipe",
+      "description": "Node with unknown predicate — must warn and still execute (fail-open).",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["logs"],
+          "condition": "unknown:predicate:value"
+        }
+      ]
+    }
+  ]
+}

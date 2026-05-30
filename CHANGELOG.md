@@ -2,6 +2,404 @@
 
 This document serves as a chronological journal of events, configurations, and experiments conducted within the `std-context-lab`. Since this is a testing environment and not a releasable software project, entries are logged by date and milestone rather than semantic versioning.
 
+## [2026-05-31] — v0.5.5 Update: REPORT_041 Fixed
+
+### Summary
+Updated context-pipe to v0.5.5. REPORT_041 resolved upstream:
+- **REPORT_041** ✅ — `_run_mcp_node` no longer hangs. Fix: added `posix=False` on Windows for `shlex.split()` and appended `server_args` from config to the command. MCP node pipes now launch correctly from module context.
+
+### Scenario 27 (MCP Banner Tolerance)
+- S27 no longer hangs — confirmed working on v0.5.5
+- Pipe completes with correct `[ECHO]` output
+- MCP SDK internal reader logs `Failed to parse JSONRPC` warnings for banner lines on stderr (cosmetic — pipe succeeds)
+- REPORT_041 archived
+
+## [2026-05-30] — v0.5.3 Update: Three Bugs Fixed, REPORT_040 Filed
+
+### Summary
+Updated context-pipe to v0.5.3. All three open bugs confirmed fixed upstream:
+- **REPORT_037** ✅ — `_StdoutToleranceWrapper` now has `__aenter__`, `__aexit__`, `__aiter__`, `__anext__`
+- **REPORT_038** ✅ — `_build_vars` now raises `ValueError` for missing required vars (fail-fast before spawn)
+- **REPORT_039** ✅ — `_run_mcp_node` and `_execute_node_chain` now read `node.get("timeout")` for per-node timeout
+
+### Bug Discovered & Closed
+- **REPORT_040** — `StdioServerParameters` missing `encoding`/`encoding_error_handler` params on Windows. MCP SDK's `TextReceiveStream` crashes with `UnicodeDecodeError` on non-UTF8 banner bytes (`\x97` em dash).
+  - Filed: Source patched upstream in v0.5.4 (commit `aad969e`: "fix(orchestrator): add encoding parameters and lossy reading for banner tolerance").
+  - Verification: Raw MCP client + encoding params + `_StdoutToleranceWrapper` test passes (banner lines skipped, tool response received).
+  - Status: ✅ Closed in v0.5.4 (upstream fix confirmed).
+
+### Bug Reports Closed
+- `REPORT_040.md` → `archive/REPORT_040_closed.md`
+
+### Bug Reports Closed
+- `REPORT_037.md` → `archive/REPORT_037_closed.md`
+- `REPORT_038.md` → `archive/REPORT_038_closed.md`
+- `REPORT_039.md` → `archive/REPORT_039_closed.md`
+
+---
+
+
+
+### Summary
+Performed structured gap analysis across all 27 scenarios against the full feature surface of context-pipe v0.5.2. Closed 5 high/medium gaps; discovered 1 new bug (REPORT_039).
+
+### Findings
+
+#### New Bug: REPORT_039 — `node.get("timeout")` ignored by orchestrator
+- The per-node `"timeout"` field in pipes.json is **never read** by either `_run_mcp_node` or `_execute_node_chain`
+- Only `PIPE_NODE_TIMEOUT_MS` env var is respected (default 30s)
+- S13's `forever_sleep.py` never actually triggered a timeout (reads 1 char and exits immediately) — the evidence was a false pass
+- **Impact**: All user-facing `"timeout"` configs in pipes.json are silently ignored
+
+#### Gap Tests Verified
+| Scenario | Gap | Status |
+|---|---|---|
+| S13 | Timeout on required node (env var workaround) | ✅ |
+| S13 | `optional: true` + `condition` interaction (both paths) | ✅ |
+| S18 | `run-dynamic` with Phase 11 nodes (validator, condition, id+next) | ✅ |
+| S24 | Validator cycle loop guard | ✅ |
+| S24 | Nested validator in `branch_sequences` | ✅ |
+| S25 | Empty-default fail-fast (positive path of REPORT_038) | ✅ |
+| S25 | `--manifest` + `--var` combined | ✅ |
+
+### Updated Files
+- `bugs/REPORT_039.md` — new bug report
+- `scenarios/13-resiliency-gauntlet/pipes.json` — added `required-timeout-pipe`, `optional-condition-pipe`
+- `scenarios/13-resiliency-gauntlet/EVIDENCE.md` — gap test evidence
+- `scenarios/13-resiliency-gauntlet/README.md` — gap test documentation
+- `scenarios/18-autonomous-dynamic-sifting/EVIDENCE.md` — Phase 11 parity evidence
+- `scenarios/18-autonomous-dynamic-sifting/README.md` — Phase 11 parity table
+- `scenarios/24-dag-validator-nodes/pipes.json` — added `validator-loop-pipe`, `nested-validator-pipe`, `artifact-fork-pipe`
+- `scenarios/24-dag-validator-nodes/EVIDENCE.md` — gap test evidence
+- `scenarios/24-dag-validator-nodes/README.md` — gap test documentation
+- `scenarios/25-runtime-variables/pipes.json` — added `var-empty-default-fail-pipe`, `var-empty-default-pass-pipe`
+- `scenarios/25-runtime-variables/EVIDENCE.md` — gap test evidence
+- `scenarios/25-runtime-variables/README.md` — gap test documentation
+- `BACKLOG.md`, `CHANGELOG.md` — status sync
+
+---
+
+
+
+### Summary
+Added `artifact-fork-pipe` to Scenario 24 after user question about whether a file-exists/file-missing fork existed in Scenario 23.
+
+### Finding
+Inverse `condition` predicates (`artifact:missing` + `artifact:exists`) on sequential nodes do **not** guarantee mutual exclusion — node 1 can mutate state and satisfy node 2’s condition in the same run. `type: "validator"` + `branch_sequences` is the correct primitive for true forks.
+
+### Pipe: `artifact-fork-pipe`
+- Validator exits 0 if `.cache/spec.json` exists, 1 if missing
+- Branch 0 → `route-sift` (sift the input)
+- Branch 1 → `route-create` (create the artifact from input)
+
+### Results
+- Route 1 (missing) → `[CREATED] .cache/spec.json` only ✅
+- Route 2 (exists) → `--- [Semantic-Sift Audit] ---` only ✅
+- Mutual exclusion confirmed in both runs
+
+---
+
+
+
+### Summary
+First-ever regression run of all 21 existing scenarios on context-pipe v0.5.2 in the pi.dev environment (shell channel).
+
+| Result | Count |
+|---|---|
+| ✅ Full Pass | 13 |
+| ⚠️ Partial (infra drift) | 5 |
+| ❌ Hard Fail | 2 |
+
+### Hard Failures
+- **S03, S07**: `_StdoutToleranceWrapper` missing async ctx mgr protocol — **REPORT_037**
+
+### Infrastructure Drift
+- **S01, S14**: Relative paths in node args require running from scenario dir
+- **S09, S10, S15**: Referenced pipes no longer exist in cross-referenced pipes.json
+- **S18**: Hardcoded `grep` not on Windows PATH; `rg` works as replacement
+- **S19**: `wrapper.wrap()` renamed to `wrap_payload()` — updated in-place, now passes
+
+Full report: `regression/REGRESSION_RUN_20260530.md`
+
+---
+
+
+
+### Summary
+First shell-channel run of all 6 new scenarios (Phases 9, 11, 12, 13). 2 bugs found.
+
+| Scenario | Result | Notes |
+|---|---|---|
+| 22 — Pipe Transparency Layer | ✅ PASS | All 7 tests incl. Rust parity |
+| 23 — Conditional Branching | ✅ PASS | All 5 predicates + fail-open + Rust parity |
+| 24 — DAG Validator Nodes + Loop Guard | ✅ PASS | Validator routing, explicit jump, loop guard |
+| 25 — Runtime Variable Injection | ⚠️ PARTIAL | `--var`, defaults, env fallback work; missing var fail-fast broken (REPORT_038) |
+| 26 — Run Manifests | ✅ PASS | Explicit + auto + fail manifest all correct |
+| 27 — MCP Banner Tolerance | ❌ BLOCKED | `_StdoutToleranceWrapper` missing async ctx mgr protocol (REPORT_037) |
+
+### Bugs Filed
+- **REPORT_037**: `_StdoutToleranceWrapper` missing `__aenter__`/`__aexit__` — Phase 13 regression breaks all MCP node pipes
+- **REPORT_038**: Missing `${VAR}` passed as literal to subprocess instead of fail-fast
+
+### Infrastructure Fixes During Run
+- `scenarios/22-pipe-transparency-layer/pipes.json`: Added `no-logging-pipe` for env var fallback test; fixed missing comma
+- `scenarios/27-mcp-banner-tolerance/pipes.json`: Changed server `command` from bare `python` to full path + absolute script path; changed backslash paths to forward slashes (shlex.split compatibility)
+- `scenarios/27-mcp-banner-tolerance/mock_noisy_server.py`: Fixed notification handler (skip notifications with no `id`)
+
+---
+
+
+
+### Summary
+Read CPP CHANGELOG and backlog. Identified 6 untested feature areas from v0.5.0. Created scenario directories, README.md, and pipes.json for each.
+
+| Scenario | Feature | Phase |
+|---|---|---|
+| 22 | Pipe Transparency Layer (`logging` block, `[PIPE]` stderr) | 9 |
+| 23 | Conditional Branching (`condition` predicates: size, artifact, contains) | 11A |
+| 24 | DAG Validator Nodes + Loop Guard (`type: "validator"`, `branch_sequences`, `next`, 100-step guard) | 11B/C |
+| 25 | Runtime Variable Injection (`--var`, `vars` defaults, fail-fast, env fallback) | 12A |
+| 26 | Run Manifests (`--manifest`, `"manifest": "auto"`, schema validation) | 12B |
+| 27 | MCP Banner Tolerance (noisy server, `verbose` flag, 50-line safety limit) | 13 |
+
+`BACKLOG.md` and `LAB_STATUS.md` updated.
+
+---
+
+
+
+### Summary
+Updated context-pipe to v0.5.2 and verified all three open reports against source and deployed extension.
+
+### Update
+- `git stash` + `git pull` in `target_repos/context-pipe` (egg-info conflict) — fast-forwarded to `087c28d` (v0.5.2), 6 files changed
+- `scripts/fetch_cpipe.py` — `cpipe v0.5.2` installed
+- `lab_update.py` ran clean — onboarding regenerated `.pi/extensions/context-pipe.ts`
+
+### REPORT_034 — ✅ CLOSED
+All 6 `execute` handlers now return `{ content: [{ type: "text", text: ... }] }`. Confirmed in source (lines 1249–1318) and deployed extension (lines 43–112).
+
+### REPORT_035 — ✅ ALL 5 DEFECTS CLOSED
+| Defect | Fix confirmed |
+|---|---|
+| A — shell injection | `spawnSync` with args array (line 1226) — no shell |
+| B — `pipe_analyze_file` reads full file | `statSync().size` + recommendation string (line 1300) |
+| C — 1MB maxBuffer | `maxBuffer = 50 * 1024 * 1024` (line 1222) |
+| D — `tool_call` doesn't block | `return { block: true, reason: ... }` for > 1KB (line 1336) |
+| E — `setStatus` missing prior set | `ctx.ui.setStatus("context-pipe", "Sifting output...")` added (line 1338) |
+
+### REPORT_036 — ✅ pi.dev gap CLOSED
+Defect D fix (above) is the pi.dev enforcement gap. `tool_call` now blocks native `read` for files > 1KB.
+Structural gap on Cursor, Claude Code, Qwen, Codex, OpenCode remains (post-tool-only architectures — not fixable via hooks).
+
+### Verified Versions
+| Component | Version |
+| :--- | :--- |
+| `context-pipe` (Python) | `0.5.2` |
+| `cpipe` (Rust binary) | `0.5.2` |
+| `semantic-sift` (Python) | `0.3.5` |
+| `sift-core` (Rust binary) | `0.3.5` |
+
+---
+
+
+
+### Summary
+User pointed out `.gemini/settings.json` has a `BeforeTool` config, contradicting REPORT_036's original claim.
+Full source audit conducted across all platform injectors.
+
+### Findings (corrected)
+| Platform | Pre-tool blocking |
+|---|---|
+| Gemini CLI | ✅ `BeforeTool` → `{"decision": "deny"}` for `read_file`/`view_file` > 50KB |
+| Antigravity | ✅ Same as Gemini CLI |
+| Cline | ✅ `PreToolUse` PS1+bash → `{"cancel": true}` > 1KB |
+| Windsurf | ✅ `pre_mcp_tool_use` + security gateway → `exit 2` > 1KB |
+| pi.dev | ❌ Has API, wrong implementation (REPORT_035 Defect D) |
+| Cursor, Claude Code, Qwen, Codex, OpenCode | ❌ Post-tool-only or no hooks |
+
+Original REPORT_036 was wrong on 4 platforms. Fully rewritten.
+
+---
+
+
+
+### Summary
+User asked whether REPORT_035 defects are pi-specific or universal. Full scope analysis conducted.
+
+### Findings
+- **Defects A, B, C, E**: Strictly pi.dev extension template. No other platform uses `execSync`-based subprocess calls. Zero regression risk to other platforms when fixed.
+- **Defect D**: pi.dev implementation is pi-specific (wrong `tool_call` usage), but the underlying gap — no platform blocks native `read` programmatically — is universal. Split to REPORT_036.
+- **Fix A correction**: The proposed fix in REPORT_035 used backslash escaping (`replace(/"/g, '\\"')`) which is wrong on Windows `cmd.exe`. Corrected to `spawnSync` with args array (shell-bypassed, cross-platform safe). Also resolves Defect C (maxBuffer) in the same change.
+- **OpenClaw note**: `_inject_openclaw()` also uses `execSync` at line 1162 with no `maxBuffer` override. Out of scope for current reports but worth tracking.
+
+### Outcome
+- `REPORT_035.md` updated: Fix A corrected, Defect D split note added, Cross-Platform Risk section added.
+- `REPORT_036.md` filed: Universal mandate-enforcement gap across all platforms.
+
+---
+
+
+
+### Summary
+Proactive static analysis of `.pi/extensions/context-pipe.ts` against pi `extensions.md` API docs and CLI source. Found 5 defects beyond REPORT_034.
+
+| # | Severity | Defect |
+|---|---|---|
+| A | High | `pipe_run_dynamic` passes `nodes_json` unquoted in shell command → `JSONDecodeError` |
+| B | High | `pipe_analyze_file` reads full file instead of stat → wrong output + context flood |
+| C | Med-High | `execSync` no `maxBuffer` override → silent failure on outputs > 1MB |
+| D | Medium | `tool_call` handler only notifies, never blocks native `read` → mandate not enforced |
+| E | Low | `setStatus("")` in `finally` without prior `setStatus("sifting...")` → missing UX indicator |
+
+### Outcome
+`REPORT_035.md` filed. `LAB_STATUS.md` updated.
+
+---
+
+
+
+### Summary
+After REPORT_033 fix (v0.5.1 update + reload), tested `pipe_read_file`. New crash: `Cannot read properties of undefined (reading 'some')`.
+
+### Root Cause
+All six `execute` handlers in the `_inject_pi()` template return the raw string output of `callCli()`. Pi's internal tool dispatch calls `.some()` on `result.content` to inspect the result type — but `content` is `undefined` on a plain string, causing an unrecoverable TypeError that locks the session.
+
+### Required fix (per `extensions.md`)
+Every `execute` must return `{ content: [{ type: "text", text: string }] }`, not a raw string.
+
+### Outcome
+`REPORT_034.md` filed. `LAB_STATUS.md` updated.
+
+---
+
+
+
+### Summary
+Updated context-pipe to v0.5.1 and verified REPORT_033 fix.
+
+### Actions
+1. `lab_update.py` blocked by egg-info conflict — resolved with `git stash` + `git pull` (fast-forward to `ed166bc`).
+2. `scripts/fetch_cpipe.py` — downloaded `cpipe v0.5.1` binary.
+3. `pip install -e` + `python -m context_pipe.onboarding` — extension regenerated.
+
+### REPORT_033 Verification
+- Source fix confirmed: `onboarding.py` lines 1248 and 1332 both use `"standard-distill"` (not `"auto"`).
+- Deployed extension confirmed: `.pi/extensions/context-pipe.ts` lines 42 and 126 both use `"standard-distill"`.
+- Live `pipe_read_file` call still returns old error — **pi session reload required** to activate the new extension.
+
+### Verified Versions
+| Component | Version |
+| :--- | :--- |
+| `context-pipe` (Python) | `0.5.1` |
+| `cpipe` (Rust binary) | `0.5.1` |
+| `semantic-sift` (Python) | `0.3.5` |
+| `sift-core` (Rust binary) | `0.3.5` |
+
+---
+
+
+
+### Summary
+Tested `pipe_read_file` after restart/reload following REPORT_032 fix. Tool failed with a new error.
+
+### Test Result
+```
+pipe_read_file(path="LAB_STATUS.md")
+→ mcp-pipe: error: Pipe 'auto' not found.
+  Available: standard-distill, semantic-refinery, ...
+```
+
+### Root Cause
+The v0.5.0 `_inject_pi()` template uses `"auto"` as the default pipe name fallback in two places (lines 42 and 126 of the regenerated `.pi/extensions/context-pipe.ts`). The CLI `_cmd_run` performs a direct name lookup — `"auto"` is not a registered pipe. Correct default is `"standard-distill"` (matches MCP `server.py` default). `REPORT_033.md` filed.
+
+---
+
+
+
+### Summary
+Investigated `pipe_read_file` failure: `mcp-pipe: error: unrecognized arguments: --file`.
+
+### Root Cause (Two-Fault Chain)
+1. **Fault 1**: `.pi/extensions/context-pipe.ts` is the stale v0.4.7 template — never regenerated after the v0.5.0 update. Contains all REPORT_031 defects, including `execute(input)` wrong param position.
+2. **Fault 2**: v0.4.7 template uses `--file` flag which has never been valid in the CLI (correct flag is `--input-file`). With `input.path = undefined` from Fault 1, the command becomes `run auto --file ` (empty path) — rejected by the CLI.
+
+### Why Onboarding Never Re-ran
+`lab_update.py` calls `python -m context_pipe.onboarding --environment Gemini` — the `--environment` flag was removed in v0.5.0. The call silently failed during the update session (logged in CHANGELOG). Since `_inject_pi()` was never called, the stale extension was never overwritten.
+
+### Outcome
+- `REPORT_032.md` filed in `bugs/`
+- `LAB_STATUS.md` updated with new open bug
+
+---
+
+
+
+### Summary
+Verified that both open pi.dev integration bugs were fully resolved in context-pipe v0.5.0.
+
+### REPORT_030 — Missing pi.dev Integration: ✅ RESOLVED
+- `platforms.py`: `PI_CODING_AGENT_DIR` → `pi.dev` and `pi` process name → `pi.dev` both present and live-tested.
+- `onboarding.py`: `_inject_pi()` function exists (line 1191) and is dispatched (line 1610). Generates `.pi/extensions/context-pipe.ts` and `.pi/skills/context-pipe.md`.
+- `doc/INTEGRATION_ENCYCLOPEDIA.md`: pi.dev entry added at line 51 with Schema E ("No MCP — Native TypeScript extension").
+
+### REPORT_031 — 5 Defects in Generated Extension: ✅ ALL 6 DEFECTS RESOLVED
+| # | Defect | Fix in v0.5.0 |
+|---|---|---|
+| 1 | `execute(input)` wrong param position | `execute(_toolCallId, params)` |
+| 2 | Bare `cpipe` not on PATH | Resolved absolute path via `shutil.which("mcp-pipe")` |
+| 3 | `event.result` undefined | `event.content?.[0]?.text` |
+| 4 | Mutating event instead of returning patch | `return { content: [{ type: "text", text: sifted }] }` |
+| 5 | Command uses `execute` instead of `handler` | `handler: async (_args, _ctx) => { ... }` |
+| 6 | Missing tools (`list_pipes`, `pipe_analyze_file`, `pipe_run_dynamic`) | All 6 tools now registered |
+
+---
+
+
+
+### Summary
+Updated both core target repos to their latest released versions using `lab_update.py`.
+
+### Actions Taken
+1. **`lab_update.py`** ran but context-pipe `git pull` was aborted due to a local uncommitted change in `target_repos/context-pipe/AGENTS.md`.
+2. **Manual recovery**: Ran `git stash` in `target_repos/context-pipe`, then `git pull` — fast-forwarded from `6a71c48` to `95d32c4` (tag `v0.5.0`), updating 30 files with 2,538 insertions.
+3. **Binary re-fetch**: Ran `scripts/fetch_cpipe.py` — downloaded `cpipe-x86_64-pc-windows-msvc.zip` from GitHub release `v0.5.0`. Binary installed to `.venv/Scripts/cpipe.exe`.
+4. **Python packages reinstalled** via `pip install -e` for both repos.
+5. **`semantic-sift`** was already current at `v0.3.5` (pulled successfully by `lab_update.py`).
+
+### Verified Versions
+| Component | Version |
+| :--- | :--- |
+| `context-pipe` (Python) | `0.5.0` |
+| `cpipe` (Rust binary) | `0.5.0` |
+| `semantic-sift` (Python) | `0.3.5` |
+| `sift-core` (Rust binary) | `0.3.5` |
+
+### Notes
+- Onboarding step in `lab_update.py` failed (`--environment` flag not recognised) — no regression, onboarding was already complete from prior session.
+- `LAB_STATUS.md` baseline updated to reflect new versions.
+
+---
+
+## [2026-05-27] - pi.dev Extension Onboarding & Bug Report
+- Ran `mcp-pipe onboard Gemini` after creating `.pi/` directory.
+- Successfully generated pi.dev native extension (`.pi/extensions/context-pipe.ts`), skill (`.pi/skills/context-pipe.md`), and `package.json`.
+- **Identified Bug #031**: `_inject_pi()` template in `onboarding.py` contains 5 defects:
+  - Tool execute signatures use wrong parameter position (`execute(input)` instead of `execute(toolCallId, params, ...)`) — all 3 tools silently fail.
+  - `cpipe` fast path uses bare command name not in PATH — always falls back to Python.
+  - `tool_result` handler reads `event.result` (always undefined) — auto-sift never fires.
+  - `tool_result` mutates `event.result` instead of returning a patch — mutation has no effect.
+  - `pipe-stats` command uses `execute()` instead of `handler()` — command never registers.
+- Filed `bugs/REPORT_031.md` with full root cause analysis, reproduction steps, and fix recommendations.
+- **DO NOT FIX**: Per lab protocol, bug is in `target_repos/` source; filing only.
+
+## [2026-05-27] - Lab Update
+- Ran `python lab_update.py` to pull latest changes in `target_repos/`.
+- **context-pipe**: updated from `v0.4.5` → `v0.4.7` (binary: `cpipe 0.4.7`).
+- **semantic-sift**: updated from `v0.3.2` → `v0.3.4` (binary: `sift-core 0.3.4`).
+- Updated `LAB_STATUS.md` with new baseline versions.
+- **⚠️ Note**: Final onboarding step threw `unrecognized arguments: --environment`. The `--environment Gemini` flag is no longer accepted by the current `onboarding.py`. May need a fix in `lab_update.py` or the onboarding script.
+
 ## [2026-05-10] - Initial Lab Setup
 - Initialized `std-context-lab` repository to battle-test `context-pipe` and `semantic-sift`.
 - Cloned `context-pipe` and `semantic-sift` into `target_repos/` as read-only references (local push disabled).

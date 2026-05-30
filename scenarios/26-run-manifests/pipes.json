@@ -1,0 +1,36 @@
+{
+  "pipes": [
+    {
+      "name": "standard-distill",
+      "description": "General-purpose distillation. Used with --manifest for Test A.",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["logs"]
+        }
+      ]
+    },
+    {
+      "name": "auto-manifest-pipe",
+      "description": "Pipe with manifest:auto — automatically writes to .pipe_cache/<name>-<iso>.json.",
+      "manifest": "auto",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "0.5"]
+        }
+      ]
+    },
+    {
+      "name": "manifest-fail-pipe",
+      "description": "Node that deliberately exits non-zero (optional:false) — manifest must record status:fail.",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.exit(1)"],
+          "optional": false
+        }
+      ]
+    }
+  ]
+}

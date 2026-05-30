@@ -1,0 +1,190 @@
+{
+  "pipes": [
+    {
+      "name": "validator-exit-router",
+      "description": "Validator node routes to 'pass-sift' on exit 0, 'fail-passthrough' on exit 1.",
+      "nodes": [
+        {
+          "type": "validator",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.exit(0)"],
+          "branches": {
+            "0": "pass-sift",
+            "1": "fail-passthrough",
+            "default": "fail-passthrough"
+          }
+        },
+        {
+          "id": "pass-sift",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "0.5"]
+        },
+        {
+          "id": "fail-passthrough",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.stdout.write(sys.stdin.read())"]
+        }
+      ],
+      "branch_sequences": {}
+    },
+    {
+      "name": "validator-exit-1-router",
+      "description": "Same topology but validator always exits 1 — routes to fail-passthrough.",
+      "nodes": [
+        {
+          "type": "validator",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.exit(1)"],
+          "branches": {
+            "0": "pass-sift",
+            "1": "fail-passthrough",
+            "default": "fail-passthrough"
+          }
+        },
+        {
+          "id": "pass-sift",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "0.5"]
+        },
+        {
+          "id": "fail-passthrough",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.stdout.write('[PASSTHROUGH] ' + sys.stdin.read())"]
+        }
+      ],
+      "branch_sequences": {}
+    },
+    {
+      "name": "explicit-jump-pipe",
+      "description": "Node A jumps directly to node C via 'next', skipping node B.",
+      "nodes": [
+        {
+          "id": "node-a",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.stdout.write('[A]' + sys.stdin.read())"],
+          "next": "node-c"
+        },
+        {
+          "id": "node-b",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.stdout.write('[B-SHOULD-NOT-APPEAR]' + sys.stdin.read())"]
+        },
+        {
+          "id": "node-c",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.stdout.write('[C]' + sys.stdin.read())"]
+        }
+      ]
+    },
+    {
+      "name": "loop-guard-pipe",
+      "description": "Intentional cycle via 'next' — must trigger 100-step loop guard.",
+      "nodes": [
+        {
+          "id": "node-loop-a",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.stdout.write(sys.stdin.read())"],
+          "next": "node-loop-b"
+        },
+        {
+          "id": "node-loop-b",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.stdout.write(sys.stdin.read())"],
+          "next": "node-loop-a"
+        }
+      ]
+    },
+    {
+      "name": "validator-loop-pipe",
+      "description": "Validator always exits 0, branches back to itself via a branch_sequence. Must hit loop guard at 100 steps.",
+      "nodes": [
+        {
+          "id": "start",
+          "type": "validator",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.exit(0)"],
+          "branches": {
+            "0": "loop-back"
+          }
+        }
+      ],
+      "branch_sequences": {
+        "loop-back": [
+          {
+            "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+            "args": ["-c", "import sys; sys.stdout.write(sys.stdin.read())"],
+            "next": "start"
+          }
+        ]
+      }
+    },
+    {
+      "name": "nested-validator-pipe",
+      "description": "Validator in branch_sequence to test recursive DAG nesting. Main validator exits 1 -> branch to 'inner-val' sequence, which contains a second validator that exits 1 -> routes to 'inner-sift'.",
+      "nodes": [
+        {
+          "id": "outer-val",
+          "type": "validator",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys; sys.exit(1)"],
+          "branches": {
+            "0": "skip-seq",
+            "1": "inner-val-seq"
+          }
+        }
+      ],
+      "branch_sequences": {
+        "inner-val-seq": [
+          {
+            "id": "inner-validator",
+            "type": "validator",
+            "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+            "args": ["-c", "import sys; sys.exit(0)"],
+            "branches": {
+              "0": "inner-sift-seq"
+            }
+          }
+        ],
+        "inner-sift-seq": [
+          {
+            "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+            "args": ["semantic", "--rate", "0.5"]
+          }
+        ],
+        "skip-seq": [
+          {
+            "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+            "args": ["-c", "import sys; sys.stdout.write('[SKIPPED-NESTED]' + sys.stdin.read())"]
+          }
+        ]
+      }
+    },
+    {
+      "description": "True two-route fork via validator: checks if .cache/spec.json exists BEFORE any node runs. Route 0 (exists) -> sift. Route 1 (missing) -> create script. Exactly one route fires per execution.",
+      "nodes": [
+        {
+          "type": "validator",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+          "args": ["-c", "import sys,os; sys.exit(0 if os.path.exists('.cache/spec.json') else 1)"],
+          "branches": {
+            "0": "route-sift",
+            "1": "route-create"
+          }
+        },
+        {
+          "id": "route-sift",
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "0.5"]
+        }
+      ],
+      "branch_sequences": {
+        "route-create": [
+          {
+            "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+            "args": ["-c", "import sys,os,json; os.makedirs('.cache',exist_ok=True); content=sys.stdin.read(); spec={'created_by':'context-pipe-lab','input':content}; open('.cache/spec.json','w').write(json.dumps(spec)); sys.stdout.write('[CREATED] .cache/spec.json\\n'+content)"]
+          }
+        ]
+      }
+    }
+  ]
+}

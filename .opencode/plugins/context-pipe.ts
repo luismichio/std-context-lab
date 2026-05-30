@@ -15,6 +15,5 @@
 export const ContextPipePlugin = async (_: any) => {
   return {
     // Hook placeholder - will be activated once OpenCode triggers tool.execute.after
-    // "tool.execute.after": async (input: any, output: any) => { ... }
   };
 };

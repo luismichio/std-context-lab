@@ -1,0 +1,18 @@
+{
+  "pipe": "standard-distill",
+  "vars": {},
+  "startedAt": "2026-05-30T17:43:18.201661Z",
+  "completedAt": "2026-05-30T17:43:20.577102Z",
+  "status": "pass",
+  "steps": [
+    {
+      "index": 1,
+      "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+      "ok": true,
+      "status": 0,
+      "inputSize": 20,
+      "outputSize": 171
+    }
+  ],
+  "finalOutput": "--- [Semantic-Sift Audit] ---\r\n\ud83d\udcca Reduction: 5.0% (0.0KB -> 0.0KB)\r\n\ud83d\udee1\ufe0f Guard: Trace-Verified (No Echo)\r\n\u26a1 Latency: 1.1ms\r\n-----------------------------\r\ntest manifest input"
+}

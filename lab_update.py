@@ -39,7 +39,7 @@ def main():
     # 3. Check for Version Mismatches
     cp_toml = os.path.join("target_repos/context-pipe/crates/cpipe/Cargo.toml")
     cp_target_version = get_version_from_file(cp_toml, r'version = "([^"]+)"')
-    
+
     if os.path.exists(cpipe_bin):
         cp_actual = run_cmd(f'"{cpipe_bin}" --version').stdout.strip()
         print(f"cpipe: target={cp_target_version}, actual={cp_actual}")
@@ -55,11 +55,21 @@ def main():
         print(f"sift-core: target={ss_target_version}, actual={ss_actual}")
 
     # 4. Final Onboarding (CPP only)
+    # Re-run onboarding from the project root so horizon scanning picks up all
+    # present IDE signatures (.pi/, .gemini/, etc.) and regenerates every
+    # injected file (e.g. .pi/extensions/context-pipe.ts) with the new template.
+    # Positional argument only — --environment was removed in v0.5.0.
     print("\n--- Running Final Onboarding ---")
-    run_cmd(f'"{venv_python}" -m context_pipe.onboarding --environment Gemini', cwd="target_repos/context-pipe")
+    onboard_result = run_cmd(f'"{venv_python}" -m context_pipe.onboarding', cwd=root)
+    if onboard_result.returncode != 0:
+        print("\n[!] WARNING: Onboarding failed -- injected files (e.g. .pi/extensions/context-pipe.ts)")
+        print("   were NOT regenerated. Run manually:")
+        print(f'   {venv_python} -m context_pipe.onboarding')
+    else:
+        print("Onboarding complete -- all injected files regenerated.")
 
     print("\nUpdate complete. Please verify LAB_STATUS.md.")
-    print("âš ï¸  IMPORTANT: Restart your CLI or IDE to ensure all changes and new binaries are loaded.")
+    print("[!] IMPORTANT: Restart your CLI or IDE to ensure all changes and new binaries are loaded.")
 
 if __name__ == "__main__":
     main()

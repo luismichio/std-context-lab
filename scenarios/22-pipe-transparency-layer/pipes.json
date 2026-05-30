@@ -1,0 +1,70 @@
+{
+  "pipes": [
+    {
+      "name": "transparent-compact",
+      "description": "Two-node pipe with compact [PIPE] logging to stderr.",
+      "logging": {
+        "enabled": true,
+        "prefix": "[PIPE]",
+        "level": "compact",
+        "fields": ["node", "tokens", "timing"]
+      },
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["logs"]
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "0.5"]
+        }
+      ]
+    },
+    {
+      "name": "transparent-verbose",
+      "description": "Two-node pipe with verbose [PIPE] logging — entry + exit per node.",
+      "logging": {
+        "enabled": true,
+        "prefix": "[PIPE]",
+        "level": "verbose",
+        "fields": ["trigger", "node", "tokens", "timing"]
+      },
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["logs"]
+        },
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic", "--rate", "0.5"]
+        }
+      ]
+    },
+    {
+      "name": "custom-prefix-pipe",
+      "description": "Tests custom [XPIPE] prefix override.",
+      "logging": {
+        "enabled": true,
+        "prefix": "[XPIPE]",
+        "level": "compact",
+        "fields": ["node", "tokens"]
+      },
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic"]
+        }
+      ]
+    },
+    {
+      "name": "no-logging-pipe",
+      "description": "Pipe with NO logging block — used to test env var fallback (PIPE_LOG_LEVEL).",
+      "nodes": [
+        {
+          "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\semantic-sift-cli.exe",
+          "args": ["semantic"]
+        }
+      ]
+    }
+  ]
+}

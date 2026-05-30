@@ -1,0 +1,17 @@
+{
+  "pipe": "manifest-fail-pipe",
+  "vars": {},
+  "startedAt": "2026-05-30T17:44:00.541478Z",
+  "completedAt": "2026-05-30T17:44:00.658428Z",
+  "status": "fail",
+  "steps": [
+    {
+      "index": 1,
+      "cmd": "C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe",
+      "ok": false,
+      "error": "",
+      "status": 1
+    }
+  ],
+  "finalOutput": "Error in node C:\\Users\\luism\\Workbench\\GitHub\\std-context-lab\\.venv\\Scripts\\python.exe: "
+}
