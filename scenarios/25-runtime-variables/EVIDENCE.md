@@ -1,6 +1,6 @@
 # Scenario 25 — Evidence: Runtime Variable Injection
 
-**Date:** 2026-05-30 | **Status:** ⚠️ PARTIAL (1 bug found — REPORT_038)
+**Date:** 2026-05-31 | **Status:** ✅ PASS (all tests — REPORT_038 confirmed fixed in v0.5.3)
 
 ## Test A — `--var RATE=0.3` injected
 ```bash
@@ -20,16 +20,15 @@ echo "hello world test input" | mcp-pipe run var-rate-pipe --config pipes.json -
 ```
 **stdout:** Audit header present (0.1 override applied) ✅
 
-## Test D — Missing variable fail-fast ❌ BUG (REPORT_038)
+## Test D — Missing variable fail-fast ✅ FIXED (REPORT_038 closed v0.5.3)
 ```bash
 echo "test" | mcp-pipe run var-missing-pipe --config pipes.json
 ```
-**Expected:** `mcp-pipe: error: Missing pipe variable: REQUIRED_VAR`
-**Actual:**
+**Actual (v0.5.7):**
 ```
-Error in node ...semantic-sift-cli: argument --rate: invalid float value: '${REQUIRED_VAR}'
+ValueError: Missing pipe variable: REQUIRED_VAR
 ```
-❌ Literal `${REQUIRED_VAR}` passed to subprocess. No pre-spawn check. **→ REPORT_038**
+✅ Fail-fast before spawn. Undeclared `${REQUIRED_VAR}` raises error immediately.
 
 ## Test E — Multiple `--var` flags
 ```bash
@@ -44,9 +43,9 @@ FALLBACK_RATE=0.2 mcp-pipe run var-env-fallback-pipe --config pipes.json <<< "en
 ```
 **stdout:** Audit header (FALLBACK_RATE=0.2 from env used) ✅
 
-## Test F2 — Missing env var → same bug as Test D
-**stdout:** `argument --rate: invalid float value: '${FALLBACK_RATE}'`
-❌ Same literal pass-through bug. **→ REPORT_038**
+## Test F2 — Missing env var ✅ FIXED (REPORT_038)
+**Actual (v0.5.7):** `ValueError: Missing pipe variable: FALLBACK_RATE`
+✅ Same fail-fast applies to undeclared env var fallbacks.
 
 ## Test F3 — `var-empty-default-fail-pipe`: fail-fast with declared empty default
 ```bash

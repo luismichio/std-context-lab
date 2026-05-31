@@ -301,15 +301,15 @@ This document consolidates the details, objectives, and findings for all 27 test
 
 | Phase | Scenarios | Shell ✅ | Shell ⚠️ | Shell ❌ | pi.dev ✅ | pi.dev ⚠️ | pi.dev ❌ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Phase 1 (Feature Validation) | 01–11 | 7 | 2 | 2 | 7 | 2 | 2 |
+| Phase 1 (Feature Validation) | 01–11 | 8 | 1 | 2 | 8 | 1 | 2 |
 | Phase 2 (Operational Hardening) | 12–18 | 7 | 0 | 0 | 7 | 0 | 0 |
 | Phase 3 (Battle Testing & Rust) | 19–21 | 3 | 0 | 0 | 3 | 0 | 0 |
-| Phase 4 (v0.5.0 New Features) | 22–27 | 5 | 1 | 0 | 5 | 1 | 0 |
-| **Total** | **27** | **22** | **3** | **2** | **22** | **3** | **2** |
+| Phase 4 (v0.5.0 New Features) | 22–27 | 6 | 0 | 0 | 6 | 0 | 0 |
+| **Total** | **27** | **24** | **1** | **2** | **24** | **1** | **2** |
 
 The core sifting engine, DAG orchestration, resiliency, line ranges, A2A handoff, tee-pipes, multi-modal, dynamic pipes, Phase 9 transparency, Phase 11 branching, Phase 12 manifests, Phase 12 variables, and Phase 13 (MCP banner tolerance) are all verified working on v0.5.5.
 
-All scenarios are now runnable on v0.5.7. Infrastructure drift fixed: standalone `pipes.json` added to S09, S10, S15; S18 updated to `rg`. Remaining ⚠️ are S25 (vars partial — REPORT_038 closed) and S11 (script-based viz). Remaining ❌ are S03 and S07 (REPORT_041 closed, pending re-verification on v0.5.5+).
+All scenarios are now runnable on v0.5.7. Infrastructure drift fully resolved: standalone `pipes.json` added to S09, S10, S11, S15; S18 updated to `rg`. REPORT_038 (v0.5.3) confirmed fixing S25 undeclared-var fail-fast. Only remaining ⚠️ is S01 (relative path requires `cd`). Remaining ❌ are S03 and S07 (REPORT_041 closed in v0.5.5, pending re-verification).
 
 Scenario **27** ✅ fixed in v0.5.5. Scenarios **09, 10, 15, 18** ✅ drift fixed 2026-05-31. Scenario **25** was partially failing due to REPORT_038, now closed in v0.5.3.
 

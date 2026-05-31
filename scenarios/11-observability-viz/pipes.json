@@ -1,0 +1,14 @@
+{
+  "pipes": [
+    {
+      "name": "viz-pipe",
+      "description": "Meta-pipe: generates Mermaid diagram from this pipes.json",
+      "nodes": [
+        {
+          "cmd": "python",
+          "args": ["pipes_to_mermaid.py", "pipes.json"]
+        }
+      ]
+    }
+  ]
+}

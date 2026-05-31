@@ -1,13 +1,25 @@
-# Evidence: Scenario 11 (Observability Viz)
+# Evidence: Scenario 11 — Supply Chain Visualization
 
-**Verified On:** 2026-05-24
-**Baseline:** `context-pipe v0.4.3` | `semantic-sift v0.3.2`
+**Date:** 2026-05-31 | **Status:** ✅ PASS | **Baseline:** `context-pipe v0.5.7`
 
-## Verification Command
-```powershell
-python pipes_to_mermaid.py
+## Fix Applied
+Added standalone `pipes.json` with `viz-pipe` node. Previously borrowed from S01's config.
+
+## Test — viz-pipe generates Mermaid diagram
+```bash
+cd scenarios/11-observability-viz
+echo "" | mcp-pipe run viz-pipe --config pipes.json
 ```
+**stdout:**
+```
+graph LR
+  start_viz-pipe([Input])
+  node_viz-pipe_0[python]
+  start_viz-pipe --> node_viz-pipe_0
+  end_viz-pipe([LLM Context])
+  node_viz-pipe_0 --> end_viz-pipe
+```
+✅ `pipes_to_mermaid.py` parsed the local `pipes.json` and emitted a valid Mermaid `graph LR` representation.
 
-## Captured Evidence (Raw)
-*   **Log File**: [run_observability_viz.log](run_observability_viz.log)
-*   **Claim Proven**: Successfully generated Mermaid diagrams from the local `pipes.json`, proving architectural transparency.
+## Key Finding
+**System Transparency proven** — `context-pipe` architectures are self-documenting. A pipe can analyze and visualize the pipeline system itself at runtime. The visualizer is a standard node in the supply chain, not an external tool.

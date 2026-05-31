@@ -19,7 +19,7 @@ Verified success across primary agent channels. Evidence for every cell is store
 | **08** | Multi-Modal (HTML/PDF) | ✅ | ✅ | ✅ | `run_multi_modal_distillation.log` |
 | **09** | Adaptive Pressure ($VAR) | ✅ | ✅ | ✅ | `run_adaptive_pressure.log` |
 | **10** | Structured Data Exemption | ✅ | ✅ | ✅ | `run_structured_data_auditor.log` |
-| **11** | Observability (Mermaid) | ⚠️ | ✅ | ⚠️ | `run_observability_viz.log` |
+| **11** | Observability (Mermaid) | ✅ | ✅ | ✅ | `run_observability_viz.log` |
 | **12** | Giant File Heart-Attack | ✅ | ✅ | ✅ | `run_giant_file_heart_attack.log` |
 | **13** | Resiliency Gauntlet | ✅ | ✅ | ✅ | `run_resiliency_gauntlet.log` |
 | **14** | Security Black Hole (PII) | ✅ | ✅ | ✅ | `run_security_black_hole.log` |
@@ -33,7 +33,7 @@ Verified success across primary agent channels. Evidence for every cell is store
 | **22** | Pipe Transparency Layer (Phase 9) | ✅ | ⏳ | ✅ | `run_pipe_transparency.log` |
 | **23** | Conditional Branching — `condition` predicates (Phase 11A) | ✅ | ⏳ | ✅ | `run_conditional_branching.log` |
 | **24** | DAG Validator Nodes + Loop Guard (Phase 11B/C) | ✅ | ⏳ | ✅ | `run_dag_validator.log` |
-| **25** | Runtime Variable Injection — `--var` (Phase 12A) | ⚠️ | ⏳ | ⚠️ | `run_runtime_variables.log` |
+| **25** | Runtime Variable Injection — `--var` (Phase 12A) | ✅ | ⏳ | ✅ | `run_runtime_variables.log` |
 | **26** | Run Manifests — `--manifest` / `auto` (Phase 12B) | ✅ | ⏳ | ✅ | `run_manifests.log` |
 | **27** | MCP Banner Tolerance (Phase 13) | ✅ | ⏳ | ✅ | `run_mcp_banner_tolerance.log` |
 
