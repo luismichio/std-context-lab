@@ -39,7 +39,7 @@ Verified success across primary agent channels. Evidence for every cell is store
 
 **Legend:** ✅ Verified │ ⚠️ Partial (infra drift, not engine regression) │ ❌ Hard fail │ ⏳ Pending
 
-> **Shell (CLI)** and **pi.dev** results for scenarios 01–21 are from the 2026-05-30 regression run (v0.5.2); scenarios 22–27 re-verified on 2026-05-31 (v0.5.5). Gemini CLI results for 01–21 are from the original v0.4.x run; 22–27 are pending a dedicated Gemini CLI pass.
+> **Shell (CLI)** and **pi.dev** (Windows, this lab session). **OpenCode + Codex** (macOS M2 Pro + Ghostty) — active production environment for design-to-code workflow, cross-platform parity confirmed. **Gemini CLI** results for 01–21 are from the original v0.4.x run; 22–34 pending a dedicated pass.
 
 ---
 
@@ -54,7 +54,8 @@ Tracks the exact component versions active when each environment channel execute
 | **pi.dev** | 01–27 | `v0.5.2` | `v0.3.5` | 2026-05-30 | Same session as Shell — `bash` tool runs inside pi.dev |
 | **Shell (CLI)** | 27 (re-verify) | `v0.5.5` | `v0.3.5` | 2026-05-31 | REPORT_041 fixed — S27 no longer hangs |
 | **Gemini CLI** | 01–21 | `v0.4.3`–`v0.4.5` | `v0.3.2` | 2026-05-24 | Original validation pass |
-| **Gemini CLI** | 22–27 | — | — | ⏳ Pending | Not yet run on Gemini CLI |
+| **Gemini CLI** | 22–34 | — | — | ⏳ Pending | Not yet run on Gemini CLI |
+| **OpenCode + Codex** | design-to-code | `v0.5.x` | `v0.3.x` | Active | macOS M2 Pro + Ghostty — production workflow. Cross-platform parity confirmed. |
 
 ---
 
