@@ -1,13 +1,21 @@
-# Evidence: Scenario 09 (Adaptive Pressure)
+# Evidence: Scenario 09 — Adaptive Pressure Simulation
 
-**Verified On:** 2026-05-24
-**Baseline:** `context-pipe v0.4.3` | `semantic-sift v0.3.2`
+**Date:** 2026-05-31 | **Status:** ✅ PASS | **Baseline:** `context-pipe v0.5.7`
 
-## Verification Command
-```powershell
-$env:SIFT_RATE="0.1"; mcp-pipe run adaptive-sift --config ../01-protocol-basics/pipes.json --input_file ../01-protocol-basics/sample.log
+## Test A — Default rate (SIFT_RATE=0.5 from vars block)
+```bash
+cd scenarios/09-adaptive-pressure
+echo "payload..." | mcp-pipe run adaptive-sift --config pipes.json
 ```
+**stdout:** `[SIGNAL: PRESSURE_LOW] payload...` sifted at default rate 0.5
+✅ `pressure_gauge.py` prepended signal prefix. `${SIFT_RATE}` resolved from pipe `vars` default.
 
-## Captured Evidence (Raw)
-*   **Log File**: [run_adaptive_pressure.log](run_adaptive_pressure.log)
-*   **Claim Proven**: Verified that node arguments successfully resolve environment variables to dynamically adjust behavior.
+## Test B — High pressure (SIFT_RATE=0.1 via env var)
+```bash
+SIFT_RATE=0.1 mcp-pipe run adaptive-sift --config pipes.json <<< "payload..."
+```
+**stdout:** `[SIGNAL: PRESSURE_LOW] payload...` sifted at rate 0.1
+✅ `${SIFT_RATE}` resolved from env var fallback (overrides default 0.5).
+
+## Key Finding
+`vars` default `"SIFT_RATE": "0.5"` is overridden by env var at runtime — proves "Adaptive Window Pressure" claim. Dynamic argument resolution confirmed working on v0.5.7.

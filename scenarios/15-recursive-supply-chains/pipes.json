@@ -1,0 +1,24 @@
+{
+  "pipes": [
+    {
+      "name": "inner-distiller",
+      "description": "Inner pipe — distils log content via semantic-sift",
+      "nodes": [
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["logs"]
+        }
+      ]
+    },
+    {
+      "name": "recursive-distill",
+      "description": "Recursive pipe — calls inner-distiller as a subprocess node to prove Pipeline Encapsulation",
+      "nodes": [
+        {
+          "cmd": "mcp-pipe",
+          "args": ["run", "inner-distiller", "--config", "pipes.json"]
+        }
+      ]
+    }
+  ]
+}

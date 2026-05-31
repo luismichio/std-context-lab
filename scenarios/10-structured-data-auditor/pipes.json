@@ -1,0 +1,28 @@
+{
+  "pipes": [
+    {
+      "name": "json-auditor",
+      "description": "Pipes structured JSON through the sift engine to prove data-safe handling",
+      "nodes": [
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["semantic"]
+        }
+      ]
+    },
+    {
+      "name": "json-flatten-distill",
+      "description": "Flattens JSON via jq then distils — explicit opt-in to distillation for structured data",
+      "nodes": [
+        {
+          "cmd": "jq",
+          "args": [".[] | .data // .message // .value // . | tostring"]
+        },
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["semantic"]
+        }
+      ]
+    }
+  ]
+}

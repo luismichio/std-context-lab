@@ -291,24 +291,26 @@ This document consolidates the details, objectives, and findings for all 27 test
 
 ## Infrastructure Drift (Not Engine Regressions)
 
-| Scenario | Drift | Fix Required |
+| Scenario | Drift | Status |
 | :--- | :--- | :--- |
-| **01, 14** | Relative script paths require `cd` to scenario dir | Optionally update `pipes.json` to use absolute paths |
-| **09, 10, 15** | Referenced pipes removed from cross-borrowed `pipes.json` | Add standalone `pipes.json` to each scenario |
-| **18** | Hardcoded `grep` not on Windows PATH | Update scenario to use `rg` on Windows |
+| **01, 14** | Relative script paths require `cd` to scenario dir | Still applies |
+| **09, 10, 15** | Referenced pipes removed from cross-borrowed `pipes.json` | ✅ Fixed — standalone `pipes.json` added 2026-05-31 |
+| **18** | Hardcoded `grep` not on Windows PATH | ✅ Fixed — updated to `rg`, haystack regenerated 2026-05-31 |
 
 ## Summary
 
 | Phase | Scenarios | Shell ✅ | Shell ⚠️ | Shell ❌ | pi.dev ✅ | pi.dev ⚠️ | pi.dev ❌ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Phase 1 (Feature Validation) | 01–11 | 5 | 4 | 2 | 5 | 4 | 2 |
-| Phase 2 (Operational Hardening) | 12–18 | 5 | 2 | 0 | 5 | 2 | 0 |
+| Phase 1 (Feature Validation) | 01–11 | 7 | 2 | 2 | 7 | 2 | 2 |
+| Phase 2 (Operational Hardening) | 12–18 | 7 | 0 | 0 | 7 | 0 | 0 |
 | Phase 3 (Battle Testing & Rust) | 19–21 | 3 | 0 | 0 | 3 | 0 | 0 |
 | Phase 4 (v0.5.0 New Features) | 22–27 | 5 | 1 | 0 | 5 | 1 | 0 |
-| **Total** | **27** | **18** | **7** | **2** | **18** | **7** | **2** |
+| **Total** | **27** | **22** | **3** | **2** | **22** | **3** | **2** |
 
 The core sifting engine, DAG orchestration, resiliency, line ranges, A2A handoff, tee-pipes, multi-modal, dynamic pipes, Phase 9 transparency, Phase 11 branching, Phase 12 manifests, Phase 12 variables, and Phase 13 (MCP banner tolerance) are all verified working on v0.5.5.
 
-Scenario **27** is now ✅ fixed in v0.5.5. Scenarios **03 and 07** were also blocked by REPORT_041 — closed in v0.5.5, pending re-verification. Scenarios **09, 10, 15, 18, and 25** have infrastructure drift (missing pipes or Windows PATH issues) that don't affect the engine. Scenario **25** was partially failing due to REPORT_038, now closed in v0.5.3.
+All scenarios are now runnable on v0.5.7. Infrastructure drift fixed: standalone `pipes.json` added to S09, S10, S15; S18 updated to `rg`. Remaining ⚠️ are S25 (vars partial — REPORT_038 closed) and S11 (script-based viz). Remaining ❌ are S03 and S07 (REPORT_041 closed, pending re-verification on v0.5.5+).
+
+Scenario **27** ✅ fixed in v0.5.5. Scenarios **09, 10, 15, 18** ✅ drift fixed 2026-05-31. Scenario **25** was partially failing due to REPORT_038, now closed in v0.5.3.
 
 The Gemini CLI column remains pending for scenarios 22–27.

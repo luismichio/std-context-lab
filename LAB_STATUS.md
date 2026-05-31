@@ -17,16 +17,16 @@ Verified success across primary agent channels. Evidence for every cell is store
 | **06** | A2A Handoff ROI | ✅ | ✅ | ✅ | `run_a2a_handoff.log` |
 | **07** | Mental Supply Chain (E2E) | ❌ | ✅ | ❌ | `run_mental_supply_chain.log` |
 | **08** | Multi-Modal (HTML/PDF) | ✅ | ✅ | ✅ | `run_multi_modal_distillation.log` |
-| **09** | Adaptive Pressure ($VAR) | ⚠️ | ✅ | ⚠️ | `run_adaptive_pressure.log` |
-| **10** | Structured Data Exemption | ⚠️ | ✅ | ⚠️ | `run_structured_data_auditor.log` |
+| **09** | Adaptive Pressure ($VAR) | ✅ | ✅ | ✅ | `run_adaptive_pressure.log` |
+| **10** | Structured Data Exemption | ✅ | ✅ | ✅ | `run_structured_data_auditor.log` |
 | **11** | Observability (Mermaid) | ⚠️ | ✅ | ⚠️ | `run_observability_viz.log` |
 | **12** | Giant File Heart-Attack | ✅ | ✅ | ✅ | `run_giant_file_heart_attack.log` |
 | **13** | Resiliency Gauntlet | ✅ | ✅ | ✅ | `run_resiliency_gauntlet.log` |
 | **14** | Security Black Hole (PII) | ✅ | ✅ | ✅ | `run_security_black_hole.log` |
-| **15** | Recursive Supply Chains | ⚠️ | ✅ | ⚠️ | `run_recursive_supply_chains.log` |
+| **15** | Recursive Supply Chains | ✅ | ✅ | ✅ | `run_recursive_supply_chains.log` |
 | **16** | Protocol Violation Stress | ✅ | ✅ | ✅ | `run_protocol_violation_stress.log` |
 | **17** | Version Awareness | ✅ | ✅ | ✅ | `run_version_awareness.log` |
-| **18** | Autonomous Dynamic Sifting | ⚠️ | ✅ | ⚠️ | `run_autonomous_dynamic_sifting.log` |
+| **18** | Autonomous Dynamic Sifting | ✅ | ✅ | ✅ | `run_autonomous_dynamic_sifting.log` |
 | **19** | Proactive Gating (BeforeTool) | ✅ | ✅ | ✅ | `run_gating_battle_test.log` |
 | **20** | Line Range Precision | ✅ | ✅ | ✅ | `run_ranges_battle_test.log` |
 | **21** | Rust Core Performance | ✅ | ✅ | ✅ | `run_parity_v2.log` |

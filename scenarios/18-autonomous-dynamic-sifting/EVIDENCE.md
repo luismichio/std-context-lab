@@ -1,36 +1,27 @@
-# Evidence: Scenario 18 (Autonomous Dynamic Sifting)
+# Evidence: Scenario 18 — Autonomous Dynamic Sifting
 
-**Verified On:** 2026-05-24
-**Baseline:** `context-pipe v0.4.3` | `semantic-sift v0.3.2`
+**Date:** 2026-05-31 | **Status:** ✅ PASS | **Baseline:** `context-pipe v0.5.7`
 
-## Verification Command
-```powershell
-mcp-pipe run-dynamic '[{"cmd": "grep", "args": ["needle"]}, {"cmd": "semantic-sift-cli", "args": ["semantic"]}]' --input_file needle_in_haystack.log --allow_shell
-```
+## Fix Applied
+**Windows drift:** Original command used `grep` (not on Windows PATH). Updated to `rg` (ripgrep).
+**Log drift:** `needle_in_haystack.log` regenerated — needle is `FATAL_ERROR_CODE_9942`, not the string "needle".
 
-## Captured Evidence (Raw)
-*   **Log File**: [run_autonomous_dynamic_sifting.log](run_autonomous_dynamic_sifting.log)
-*   **Claim Proven**: Proved the "Dynamic Sifting" capability, allowing agents to assemble JIT processing graphs on-the-fly.
-
-## Gap Tests Added 2026-05-30 (Phase 11 features via run-dynamic)
-
-### Test — Dynamic validator (type:"validator" + branches)
+## Test — JIT dynamic graph: rg filter → semantic sift
 ```bash
-echo "input" | mcp-pipe run-dynamic '[{"id":"val","type":"validator","cmd":"<python>","args":["-c","import sys; sys.exit(0)"],"branches":{"0":"sift"}},{"id":"sift","cmd":"<semantic-sift-cli>","args":["semantic","--rate","0.5"]}]'
+cd scenarios/18-autonomous-dynamic-sifting
+python generate_haystack.py  # regenerate 150,000-line haystack
+mcp-pipe run-dynamic '[{"cmd":"rg","args":["FATAL_ERROR"]},{"cmd":"semantic-sift-cli","args":["semantic"]}]' --input_file needle_in_haystack.log --allow_shell
 ```
-**stdout:** `--- [Semantic-Sift Audit] ---`
-✅ Validator exits 0 → routed to sift branch.
+**stdout:**
+```
+--- [Semantic-Sift Audit] ---
+📊 Reduction: -48.7% (0.1KB -> 0.2KB)
+🛡️ Guard: Trace-Verified (No Echo)
+⚡ Latency: 15.7ms
+-----------------------------
+[2026-05-13 14:22] CRITICAL: FATAL_ERROR_CODE_9942 - Database connection completely dropped by peer at pool_id=14.
+```
+✅ JIT graph assembled and executed. 1 needle extracted from 150,000 lines without modifying `pipes.json`.
 
-### Test — Dynamic condition (`condition: "size:>5000"`)
-```bash
-echo "SHORT" | mcp-pipe run-dynamic '[{"cmd":"<semantic-sift-cli>","args":["logs"],"condition":"size:>5000"},{"cmd":"<semantic-sift-cli>","args":["logs"]}]'
-```
-**stdout:** One sift audit header (first node skipped, second ran)
-✅ Condition gate works in dynamic context.
-
-### Test — Dynamic id+next jump
-```bash
-echo "input" | mcp-pipe run-dynamic '[{"id":"A","cmd":"<python>","args":["-c","import sys; sys.stdout.write('[A]'+sys.stdin.read())"],"next":"C"},{"id":"B","cmd":"<python>","args":["-c","import sys; sys.stdout.write('[B]'+sys.stdin.read())"]},{"id":"C","cmd":"<python>","args":["-c","import sys; sys.stdout.write('[C]'+sys.stdin.read())"]}]'
-```
-**stdout:** `[C][A]input`
-✅ Node B skipped. `next` jump works in dynamic context.
+## Phase 11 Parity via run-dynamic (previously verified 2026-05-30)
+`type:"validator"`, `condition`, `id`+`next` all work in `run-dynamic` — node schemas pass through unmodified to `run_pipe`.

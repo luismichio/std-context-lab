@@ -1,0 +1,21 @@
+{
+  "pipes": [
+    {
+      "name": "adaptive-sift",
+      "description": "Adaptive compression rate via SIFT_RATE env var or --var override",
+      "vars": {
+        "SIFT_RATE": "0.5"
+      },
+      "nodes": [
+        {
+          "cmd": "python",
+          "args": ["pressure_gauge.py"]
+        },
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["semantic", "--rate", "${SIFT_RATE}"]
+        }
+      ]
+    }
+  ]
+}
