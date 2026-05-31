@@ -1,0 +1,20 @@
+{
+  "pipes": [
+    {
+      "name": "concurrent-sift",
+      "description": "Standard sift pipe used for concurrent execution stress test",
+      "nodes": [{ "cmd": "semantic-sift-cli", "args": ["semantic"] }]
+    },
+    {
+      "name": "concurrent-tee",
+      "description": "Sift pipe with shared tee sink — tests concurrent write safety",
+      "nodes": [
+        {
+          "cmd": "semantic-sift-cli",
+          "args": ["semantic"],
+          "tee": { "sink": "file", "path": ".tee/concurrent_snapshot.md", "mode": "overwrite" }
+        }
+      ]
+    }
+  ]
+}

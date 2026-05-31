@@ -1,0 +1,9 @@
+{
+  "pipes": [
+    {
+      "name": "enforcement-sift",
+      "description": "Used to verify pipe_read_file routes large files correctly",
+      "nodes": [{ "cmd": "semantic-sift-cli", "args": ["semantic"] }]
+    }
+  ]
+}

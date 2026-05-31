@@ -1,0 +1,9 @@
+{
+  "pipes": [
+    {
+      "name": "malformed-sift",
+      "description": "Baseline pipe for malformed input testing — sift engine must not crash",
+      "nodes": [{ "cmd": "semantic-sift-cli", "args": ["semantic"] }]
+    }
+  ]
+}

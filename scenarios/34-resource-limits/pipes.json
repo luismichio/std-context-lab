@@ -1,0 +1,9 @@
+{
+  "pipes": [
+    {
+      "name": "resource-sift",
+      "description": "Sift pipe for resource stress testing",
+      "nodes": [{ "cmd": "semantic-sift-cli", "args": ["semantic"] }]
+    }
+  ]
+}

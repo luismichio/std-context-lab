@@ -1,0 +1,36 @@
+{
+  "pipes": [
+    {
+      "name": "empty-output-pipe",
+      "description": "Node exits 0 but produces no output",
+      "nodes": [
+        { "cmd": "python", "args": ["empty_node.py"] },
+        { "cmd": "semantic-sift-cli", "args": ["semantic"], "optional": true }
+      ]
+    },
+    {
+      "name": "required-fail-pipe",
+      "description": "Required node exits 1 — pipe must report failure",
+      "nodes": [
+        { "cmd": "python", "args": ["fail_node.py"] },
+        { "cmd": "semantic-sift-cli", "args": ["semantic"] }
+      ]
+    },
+    {
+      "name": "optional-fail-pipe",
+      "description": "Optional node exits 1 — pipe must bypass and continue",
+      "nodes": [
+        { "cmd": "python", "args": ["fail_node.py"], "optional": true },
+        { "cmd": "semantic-sift-cli", "args": ["semantic"] }
+      ]
+    },
+    {
+      "name": "flood-pipe",
+      "description": "Node floods stdout with large output — engine must not OOM or hang",
+      "nodes": [
+        { "cmd": "python", "args": ["flood_node.py"] },
+        { "cmd": "semantic-sift-cli", "args": ["semantic"] }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "pipes": [
+    {
+      "name": "threshold-sift",
+      "description": "Simple sift pipe used to test read-tool threshold boundary",
+      "nodes": [{ "cmd": "semantic-sift-cli", "args": ["semantic"] }]
+    }
+  ]
+}

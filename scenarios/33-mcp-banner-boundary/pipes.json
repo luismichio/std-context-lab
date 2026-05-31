@@ -1,0 +1,39 @@
+{
+  "pipes": [
+    {
+      "name": "banner-50-pipe",
+      "description": "MCP server emits exactly 50 banner lines (at limit) — must succeed",
+      "nodes": [
+        { "type": "mcp", "server": "noisy-50", "tool": "echo", "input_key": "text" }
+      ]
+    },
+    {
+      "name": "banner-51-pipe",
+      "description": "MCP server emits 51 banner lines (over limit) — must error, not hang",
+      "nodes": [
+        { "type": "mcp", "server": "noisy-51", "tool": "echo", "input_key": "text" }
+      ]
+    },
+    {
+      "name": "banner-clean-pipe",
+      "description": "MCP server emits 0 banner lines (clean server baseline)",
+      "nodes": [
+        { "type": "mcp", "server": "noisy-0", "tool": "echo", "input_key": "text" }
+      ]
+    }
+  ],
+  "servers": {
+    "noisy-50": {
+      "command": ["C:/Users/luism/Workbench/GitHub/std-context-lab/.venv/Scripts/python.exe",
+                  "configurable_banner_server.py", "50"]
+    },
+    "noisy-51": {
+      "command": ["C:/Users/luism/Workbench/GitHub/std-context-lab/.venv/Scripts/python.exe",
+                  "configurable_banner_server.py", "51"]
+    },
+    "noisy-0": {
+      "command": ["C:/Users/luism/Workbench/GitHub/std-context-lab/.venv/Scripts/python.exe",
+                  "configurable_banner_server.py", "0"]
+    }
+  }
+}

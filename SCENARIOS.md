@@ -309,8 +309,74 @@ This document consolidates the details, objectives, and findings for all 27 test
 
 The core sifting engine, DAG orchestration, resiliency, line ranges, A2A handoff, tee-pipes, multi-modal, dynamic pipes, Phase 9 transparency, Phase 11 branching, Phase 12 manifests, Phase 12 variables, and Phase 13 (MCP banner tolerance) are all verified working on v0.5.5.
 
-All 27 scenarios verified ✅ on v0.5.7. All infrastructure drift resolved. All bug reports closed. Gemini CLI column remains pending for scenarios 22–27.
+All 27 original scenarios verified ✅ on v0.5.7. Phases 5 and 6 (S28–S34) add robustness coverage.
 
-Scenario **27** ✅ fixed in v0.5.5. Scenarios **09, 10, 15, 18** ✅ drift fixed 2026-05-31. Scenario **25** was partially failing due to REPORT_038, now closed in v0.5.3.
+---
 
-The Gemini CLI column remains pending for scenarios 22–27.
+## Phase 5: Adversarial Testing
+
+### Scenario 28: Malformed Input Gauntlet
+
+*   **Last Verified In**: `v0.5.7` (2026-05-31)
+*   **Channels**: Shell ✅ · pi.dev ✅
+*   **Objective**: Prove the engine does not crash, hang, or corrupt on pathological inputs.
+*   **Status**: ✅ Empty input → silent exit · 1MB no-newline → 1.3s no hang · 10KB JSON blob → structure preserved.
+*   **Proof**: [EVIDENCE.md](scenarios/28-malformed-input-gauntlet/EVIDENCE.md)
+
+### Scenario 29: Threshold Boundary
+
+*   **Last Verified In**: `v0.5.7` (2026-05-31)
+*   **Channels**: Shell ✅ · pi.dev ✅
+*   **Objective**: Verify the `read` tool interception threshold is exactly `> 51200` bytes.
+*   **Status**: ✅ 50,000 B passes · 51,200 B passes (not strictly >) · 51,201 B blocked with `pipe_read_file` redirect.
+*   **Proof**: [EVIDENCE.md](scenarios/29-threshold-boundary/EVIDENCE.md)
+
+### Scenario 30: Failure Injection
+
+*   **Last Verified In**: `v0.5.7` (2026-05-31)
+*   **Channels**: Shell ✅ · pi.dev ✅
+*   **Objective**: Prove correct failure handling: empty output, required/optional node failures, 10MB flood.
+*   **Status**: ✅ Empty output → silent exit · required fail → clean abort · optional fail → bypassed · 10MB flood → no OOM.
+*   **Proof**: [EVIDENCE.md](scenarios/30-failure-injection/EVIDENCE.md)
+
+---
+
+## Phase 6: Stress Testing
+
+### Scenario 31: Concurrent Execution
+
+*   **Last Verified In**: `v0.5.7` (2026-05-31)
+*   **Channels**: Shell ✅ · pi.dev ✅
+*   **Objective**: 5 simultaneous invocations complete without race conditions or corruption.
+*   **Status**: ✅ 5 workers in 2.3s · all valid sift audit headers · no deadlocks.
+*   **Proof**: [EVIDENCE.md](scenarios/31-concurrent-execution/EVIDENCE.md)
+
+### Scenario 32: Enforcement Probing
+
+*   **Last Verified In**: `v0.5.7` (2026-05-31)
+*   **Channels**: Shell ✅ · pi.dev ✅
+*   **Objective**: Confirm `read` gate holds and document `bash` back door as known intentional gap.
+*   **Status**: ✅ `read` blocks > 51200 bytes · ⚠️ `bash` bypasses (documented, by design) · `pipe_read_file` routes correctly.
+*   **Proof**: [EVIDENCE.md](scenarios/32-enforcement-probing/EVIDENCE.md)
+
+### Scenario 33: MCP Banner Boundary
+
+*   **Last Verified In**: `v0.5.7` (2026-05-31)
+*   **Channels**: Shell ✅ · pi.dev ✅
+*   **Objective**: MCP banner tolerance at exactly 50 and 51+ lines with configurable mock server.
+*   **Status**: ✅ 0 banners clean · 50 banners succeeds · 51 banners recovers (SDK warnings, no crash).
+*   **Proof**: [EVIDENCE.md](scenarios/33-mcp-banner-boundary/EVIDENCE.md)
+
+### Scenario 34: Resource Limits
+
+*   **Last Verified In**: `v0.5.7` (2026-05-31)
+*   **Channels**: Shell ✅ · pi.dev ✅
+*   **Objective**: 100MB input processed without OOM in bounded time.
+*   **Status**: ✅ 100MB in 12.3s · 50.3% reduction · ~8MB/s · no memory exhaustion.
+*   **Proof**: [EVIDENCE.md](scenarios/34-resource-limits/EVIDENCE.md)
+
+---
+
+## Conclusion
+
+**34 scenarios** validated across 6 phases on `context-pipe v0.5.7`. Known gap: `bash` tool back door is unblockable by design. Gemini CLI column pending for scenarios 22–34.
