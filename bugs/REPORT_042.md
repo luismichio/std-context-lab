@@ -6,7 +6,7 @@ pi.dev Extension: 1KB `read` Threshold Inconsistent with Python 50KB; Small File
 ## Metadata
 - **Date**: 2026-05-31
 - **Scenario**: 19 — BeforeTool Gating, 36 — pi.dev Enforcement Gap
-- **Status**: Open
+- **Status**: 🔴 Re-opened — false fix in v0.5.6
 - **Severity**: Low (threshold too low, not a security gap)
 
 ## Description
@@ -57,6 +57,32 @@ Change the threshold in `context-pipe.ts` from 1024 to 51200 to match the Python
 ```typescript
 if (stats.size > 51200) {
 ```
+
+## False Fix — v0.5.6 Claimed but Not Applied
+
+The v0.5.6 upstream changelog states:
+
+> Changed the native `read` tool interception threshold in the pi.dev extension (`context-pipe.ts`) from 1KB (`1024` bytes) to 50KB (`51200` bytes) to resolve consistency issues with the Python BeforeTool hook and eliminate false-positive blocks on small files (REPORT_042).
+
+**This is a false fix.** The `51200` value does not appear anywhere in the extension template. The fix was not applied to `context_pipe/onboarding.py` — the file that generates `.pi/extensions/context-pipe.ts`. After running `lab_update.py` on v0.5.6 and regenerating via onboarding, the extension still has:
+
+```typescript
+// context_pipe/onboarding.py line 1328 — unchanged
+if (stats.size > 1024) {
+```
+
+**Evidence:**
+```bash
+$ grep -n "51200\|1024" target_repos/context-pipe/context_pipe/onboarding.py
+1328:        if (stats.size > 1024) {   # <-- still 1KB, NOT 51200
+```
+
+```bash
+$ grep -n "51200\|1024" .pi/extensions/context-pipe.ts
+122:        if (stats.size > 1024) {   # <-- regenerated from unchanged template
+```
+
+The fix must be applied to `context_pipe/onboarding.py` line 1328, not claimed in the changelog alone.
 
 ## Evidence
 

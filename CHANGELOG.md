@@ -2,6 +2,13 @@
 
 This document serves as a chronological journal of events, configurations, and experiments conducted within the `std-context-lab`. Since this is a testing environment and not a releasable software project, entries are logged by date and milestone rather than semantic versioning.
 
+## [2026-05-31] — v0.5.6 Update: REPORT_042 False Fix
+
+### Summary
+Updated context-pipe to v0.5.6. Upstream changelog claims REPORT_042 fixed, but verification shows fix was not applied:
+- **REPORT_042** 🔴 Re-opened — `onboarding.py` template still has `1024` threshold. Generated `.pi/extensions/context-pipe.ts` still blocks at 1KB. Fix not applied to the correct file.
+- v0.5.6 also adds range telemetry parity (`get_pipe_stats` filtering, `pipe_audit_last` limit param, `pipe_list_shadow_tools` MCP server discovery).
+
 ## [2026-05-31] — v0.5.5 Update: REPORT_041 Fixed
 
 ### Summary
