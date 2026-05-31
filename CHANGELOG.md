@@ -2,6 +2,14 @@
 
 This document serves as a chronological journal of events, configurations, and experiments conducted within the `std-context-lab`. Since this is a testing environment and not a releasable software project, entries are logged by date and milestone rather than semantic versioning.
 
+## [2026-05-31] — v0.5.7 Update: REPORT_042 Properly Fixed
+
+### Summary
+Updated context-pipe to v0.5.7 (commit `ef0ea93`). REPORT_042 fully resolved:
+- **REPORT_042** ✅ — `onboarding.py` template now has `51200` at all threshold sites (lines 334, 340, 1060, 1082, 1328). Regenerated `.pi/extensions/context-pipe.ts` confirms `stats.size > 51200` on line 122.
+- v0.5.7 also fixes a CI hang in Python integration tests (Linux `asyncio` nested subprocess deadlock).
+- **Requires session restart** to reload the updated extension into the live pi.dev session.
+
 ## [2026-05-31] — v0.5.6 Update: REPORT_042 False Fix
 
 ### Summary

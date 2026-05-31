@@ -2,7 +2,7 @@
 
 This document tracks technical scenario validation across all target environments. It uses explicit version numbers to prevent "regression drift" and ensure absolute transparency about what code was tested when.
 
-**Baseline**: `context-pipe v0.5.6` | `semantic-sift v0.3.5`
+**Baseline**: `context-pipe v0.5.7` | `semantic-sift v0.3.5`
 
 ## 🏁 Cross-Platform Parity Matrix
 Verified success across primary agent channels. Evidence for every cell is stored in the `scenarios/` directory.
@@ -61,7 +61,7 @@ Tracks the exact component versions active when each environment channel execute
 ## 📦 Component Versioning (Latest Verified)
 | Component | Version | Date | Note |
 | :--- | :--- | :--- | :--- |
-| **`context-pipe`** | `v0.5.6` | 2026-05-31 | Updated via lab_update.py — commit `01cb522` range telemetry parity. REPORT_042 claimed fixed but fix not applied to `onboarding.py` template. |
+| **`context-pipe`** | `v0.5.7` | 2026-05-31 | Updated via lab_update.py — commit `ef0ea93` fixes REPORT_042 in `onboarding.py` template (all thresholds → 51200). |
 | **`semantic-sift`** | `v0.3.5` | 2026-05-30 | Updated via lab_update.py. |
 | **Telemetry (ROI)** | `v0.5.0` | 2026-05-30 | Updated with context-pipe. |
 
@@ -86,4 +86,4 @@ Refer to the `bugs/` directory for full details on failures.
 | **#040** | Windows MCP | `StdioServerParameters` missing `encoding`/`encoding_error_handler` params on Windows — `UnicodeDecodeError` on non-UTF8 banner lines from MCP servers. Blocks S27 banner tolerance. | ✅ Closed in v0.5.4 |
 
 | **#041** | Universal | `_run_mcp_node` hangs when called from module context; identical logic works as standalone function. Blocks all MCP node pipes in full pipe execution. | ✅ Closed in v0.5.5 |
-| **#042** | pi.dev | `read` threshold in pi.dev extension is 1KB; Python hook uses 50KB. v0.5.6 changelog claims fix but `onboarding.py` template unchanged — false fix. | 🔴 Re-opened |
+| **#042** | pi.dev | `read` threshold in pi.dev extension is 1KB; Python hook uses 50KB. v0.5.6 changelog claims fix but `onboarding.py` template unchanged — false fix. | ✅ Closed in v0.5.7 |

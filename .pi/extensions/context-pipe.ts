@@ -119,7 +119,7 @@ export default function (pi: ExtensionAPI) {
       const filePath = event.input.path;
       try {
         const stats = statSync(filePath);
-        if (stats.size > 1024) {
+        if (stats.size > 51200) {
           return {
             block: true,
             reason: `File is ${(stats.size / 1024).toFixed(1)}KB. Use pipe_read_file("${filePath}") instead.`
