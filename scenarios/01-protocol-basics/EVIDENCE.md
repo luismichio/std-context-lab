@@ -1,24 +1,22 @@
-# Evidence: Scenario 01 (Protocol Basics)
+# Evidence: Scenario 01 — Protocol Basics
 
-**Verified On:** 2026-05-24
-**Baseline:** `context-pipe v0.4.3` | `semantic-sift v0.3.2`
+**Date:** 2026-05-31 | **Status:** ✅ PASS | **Baseline:** `context-pipe v0.5.7`
 
-## Verification Command
-```powershell
+## Note
+Must run from the scenario directory — `transformer.js` is referenced by relative path in `pipes.json`.
+
+## Test — Node.js transformer → semantic-sift
+```bash
 cd scenarios/01-protocol-basics
-Get-Content sample.log | mcp-pipe run basics-pipe
+echo "ERROR: test log line. WARNING: another line. INFO: all good." | mcp-pipe run basics-pipe --config pipes.json
 ```
-
-## Captured Evidence (Raw)
-*   **Log File**: [run_basics.log](run_basics.log)
-*   **Transcript Snippet**:
-```log
-[LAB-TEST-TRANSFORMED] [] INFO: Connection established to remote node.
-[LAB-TEST-TRANSFORMED] [] WARN: Latency spike detected on backbone interface.
-[LAB-TEST-TRANSFORMED] [] DEBUG: Heartbeat successful.
+**stdout:**
 ```
-
-## Observation
-The pipeline successfully orchestrated a handoff between a **Node.js runtime** (`transformer.js`) and a **Python/Rust runtime** (`semantic-sift-cli`). 
-1. `transformer.js` successfully injected the `[LAB-TEST-TRANSFORMED]` prefix.
-2. `semantic-sift-cli` successfully sified the resulting stream, proving the fundamental `stdin`/`stdout` contract of the Context-Pipe Protocol (CPP).
+--- [Semantic-Sift Audit] ---
+📊 Reduction: 1.2% (0.1KB -> 0.1KB)
+🛡️ Guard: Trace-Verified (No Echo)
+⚡ Latency: 0.6ms
+-----------------------------
+[LAB-TEST-TRANSFORMED] ERROR: test log line. WARNING: another line. INFO: all good.
+```
+✅ `[LAB-TEST-TRANSFORMED]` prefix confirms `transformer.js` ran. Multi-language orchestration (Node.js → Rust/Python) confirmed working.

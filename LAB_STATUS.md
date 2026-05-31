@@ -11,11 +11,11 @@ Verified success across primary agent channels. Evidence for every cell is store
 | :--- | :--- | :---: | :---: | :---: | :--- |
 | **01** | Protocol Basics (StdIO) | ✅ | ✅ | ✅ | `run_basics.log` |
 | **02** | Shadow Discovery (Zero-Bloat) | ✅ | ✅ | ✅ | `run_shadow_discovery.log` |
-| **03** | Research Synthesizer | ❌ | ✅ | ❌ | `run_research_synthesizer.log` |
+| **03** | Research Synthesizer | ✅ | ✅ | ✅ | `run_research_synthesizer.log` |
 | **04** | Core Pre-Filters (rg/jq) | ✅ | ✅ | ✅ | `run_core_prefilters.log` |
 | **05** | Pipe-Tee Inspection | ✅ | ✅ | ✅ | `run_tee.log` |
 | **06** | A2A Handoff ROI | ✅ | ✅ | ✅ | `run_a2a_handoff.log` |
-| **07** | Mental Supply Chain (E2E) | ❌ | ✅ | ❌ | `run_mental_supply_chain.log` |
+| **07** | Mental Supply Chain (E2E) | ✅ | ✅ | ✅ | `run_mental_supply_chain.log` |
 | **08** | Multi-Modal (HTML/PDF) | ✅ | ✅ | ✅ | `run_multi_modal_distillation.log` |
 | **09** | Adaptive Pressure ($VAR) | ✅ | ✅ | ✅ | `run_adaptive_pressure.log` |
 | **10** | Structured Data Exemption | ✅ | ✅ | ✅ | `run_structured_data_auditor.log` |

@@ -21,7 +21,7 @@
   ],
   "servers": {
     "fetch": {
-      "command": ["mcp-server-fetch.exe"]
+      "command": ["C:/Users/luism/Workbench/GitHub/std-context-lab/.venv/Scripts/mcp-server-fetch.exe"]
     }
   }
 }
