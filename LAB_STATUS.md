@@ -55,7 +55,7 @@ Tracks the exact component versions active when each environment channel execute
 | **Shell (CLI)** | 27 (re-verify) | `v0.5.5` | `v0.3.5` | 2026-05-31 | REPORT_041 fixed — S27 no longer hangs |
 | **Gemini CLI** | 01–21 | `v0.4.3`–`v0.4.5` | `v0.3.2` | 2026-05-24 | Original validation pass |
 | **Gemini CLI** | 22–34 | — | — | ⏳ Pending | Not yet run on Gemini CLI |
-| **OpenCode + Codex** | design-to-code | `v0.5.x` | `v0.3.x` | Active | macOS M2 Pro + Ghostty — production workflow. Cross-platform parity confirmed. |
+| **OpenCode + Codex** | design-to-code | `v0.5.x` | `v0.3.x` | Active | macOS M2 Pro + Ghostty — [design-to-code production workflow](https://www.luiskobayashi.com/studio/studio-of-two/use-cases/design-to-code). Cross-platform parity confirmed. |
 
 ---
 
