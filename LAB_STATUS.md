@@ -2,44 +2,44 @@
 
 This document tracks technical scenario validation across all target environments. It uses explicit version numbers to prevent "regression drift" and ensure absolute transparency about what code was tested when.
 
-**Baseline**: `context-pipe v0.5.7` | `semantic-sift v0.3.5`
+**Baseline**: `context-pipe v0.5.8` | `semantic-sift v0.3.7`
 
 ## 🏁 Cross-Platform Parity Matrix
 Verified success across primary agent channels. Evidence for every cell is stored in the `scenarios/` directory.
 
-| Scenario ID | Feature / Claim | Shell (CLI) | Gemini CLI | pi.dev | Proof Artifact |
+| Scenario ID | Feature / Claim | Shell (CLI) | Gemini CLI | pi.dev | VS Code | Proof Artifact |
 | :--- | :--- | :---: | :---: | :---: | :--- |
-| **01** | Protocol Basics (StdIO) | ✅ | ✅ | ✅ | `run_basics.log` |
-| **02** | Shadow Discovery (Zero-Bloat) | ✅ | ✅ | ✅ | `run_shadow_discovery.log` |
-| **03** | Research Synthesizer | ✅ | ✅ | ✅ | `run_research_synthesizer.log` |
-| **04** | Core Pre-Filters (rg/jq) | ✅ | ✅ | ✅ | `run_core_prefilters.log` |
-| **05** | Pipe-Tee Inspection | ✅ | ✅ | ✅ | `run_tee.log` |
-| **06** | A2A Handoff ROI | ✅ | ✅ | ✅ | `run_a2a_handoff.log` |
-| **07** | Mental Supply Chain (E2E) | ✅ | ✅ | ✅ | `run_mental_supply_chain.log` |
-| **08** | Multi-Modal (HTML/PDF) | ✅ | ✅ | ✅ | `run_multi_modal_distillation.log` |
-| **09** | Adaptive Pressure ($VAR) | ✅ | ✅ | ✅ | `run_adaptive_pressure.log` |
-| **10** | Structured Data Exemption | ✅ | ✅ | ✅ | `run_structured_data_auditor.log` |
-| **11** | Observability (Mermaid) | ✅ | ✅ | ✅ | `run_observability_viz.log` |
-| **12** | Giant File Heart-Attack | ✅ | ✅ | ✅ | `run_giant_file_heart_attack.log` |
-| **13** | Resiliency Gauntlet | ✅ | ✅ | ✅ | `run_resiliency_gauntlet.log` |
-| **14** | Security Black Hole (PII) | ✅ | ✅ | ✅ | `run_security_black_hole.log` |
-| **15** | Recursive Supply Chains | ✅ | ✅ | ✅ | `run_recursive_supply_chains.log` |
-| **16** | Protocol Violation Stress | ✅ | ✅ | ✅ | `run_protocol_violation_stress.log` |
-| **17** | Version Awareness | ✅ | ✅ | ✅ | `run_version_awareness.log` |
-| **18** | Autonomous Dynamic Sifting | ✅ | ✅ | ✅ | `run_autonomous_dynamic_sifting.log` |
-| **19** | Proactive Gating (BeforeTool) | ✅ | ✅ | ✅ | `run_gating_battle_test.log` |
-| **20** | Line Range Precision | ✅ | ✅ | ✅ | `run_ranges_battle_test.log` |
-| **21** | Rust Core Performance | ✅ | ✅ | ✅ | `run_parity_v2.log` |
-| **22** | Pipe Transparency Layer (Phase 9) | ✅ | ⏳ | ✅ | `run_pipe_transparency.log` |
-| **23** | Conditional Branching — `condition` predicates (Phase 11A) | ✅ | ⏳ | ✅ | `run_conditional_branching.log` |
-| **24** | DAG Validator Nodes + Loop Guard (Phase 11B/C) | ✅ | ⏳ | ✅ | `run_dag_validator.log` |
-| **25** | Runtime Variable Injection — `--var` (Phase 12A) | ✅ | ⏳ | ✅ | `run_runtime_variables.log` |
-| **26** | Run Manifests — `--manifest` / `auto` (Phase 12B) | ✅ | ⏳ | ✅ | `run_manifests.log` |
-| **27** | MCP Banner Tolerance (Phase 13) | ✅ | ⏳ | ✅ | `run_mcp_banner_tolerance.log` |
+| **01** | Protocol Basics (StdIO) | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_basics.log` |
+| **02** | Shadow Discovery (Zero-Bloat) | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_shadow_discovery.log` |
+| **03** | Research Synthesizer | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_research_synthesizer.log` |
+| **04** | Core Pre-Filters (rg/jq) | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_core_prefilters.log` |
+| **05** | Pipe-Tee Inspection | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_tee.log` |
+| **06** | A2A Handoff ROI | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_a2a_handoff.log` |
+| **07** | Mental Supply Chain (E2E) | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_mental_supply_chain.log` |
+| **08** | Multi-Modal (HTML/PDF) | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_multi_modal_distillation.log` |
+| **09** | Adaptive Pressure ($VAR) | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_adaptive_pressure.log` |
+| **10** | Structured Data Exemption | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_structured_data_auditor.log` |
+| **11** | Observability (Mermaid) | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_observability_viz.log` |
+| **12** | Giant File Heart-Attack | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_giant_file_heart_attack.log` |
+| **13** | Resiliency Gauntlet | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_resiliency_gauntlet.log` |
+| **14** | Security Black Hole (PII) | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_security_black_hole.log` |
+| **15** | Recursive Supply Chains | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_recursive_supply_chains.log` |
+| **16** | Protocol Violation Stress | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_protocol_violation_stress.log` |
+| **17** | Version Awareness | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_version_awareness.log` |
+| **18** | Autonomous Dynamic Sifting | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_autonomous_dynamic_sifting.log` |
+| **19** | Proactive Gating (BeforeTool) | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_gating_battle_test.log` |
+| **20** | Line Range Precision | ✅ | ✅ | ✅ | ✅ (v0.5.7) | `run_ranges_battle_test.log` |
+| **21** | Rust Core Performance | ✅ | ✅ | ✅ | ✅ (v0.5.8) | `run_parity_v3.log` |
+| **22** | Pipe Transparency Layer (Phase 9) | ✅ | ⏳ | ✅ | ✅ (v0.5.7) | `run_pipe_transparency.log` |
+| **23** | Conditional Branching — `condition` predicates (Phase 11A) | ✅ | ⏳ | ✅ | ✅ (v0.5.7) | `run_conditional_branching.log` |
+| **24** | DAG Validator Nodes + Loop Guard (Phase 11B/C) | ✅ | ⏳ | ✅ | ✅ (v0.5.7) | `run_dag_validator.log` |
+| **25** | Runtime Variable Injection — `--var` (Phase 12A) | ✅ | ⏳ | ✅ | ✅ (v0.5.7) | `run_runtime_variables.log` |
+| **26** | Run Manifests — `--manifest` / `auto` (Phase 12B) | ✅ | ⏳ | ✅ | ✅ (v0.5.7) | `run_manifests.log` |
+| **27** | MCP Banner Tolerance (Phase 13) | ✅ | ⏳ | ✅ | ✅ (v0.5.7) | `run_mcp_banner_tolerance.log` |
 
 **Legend:** ✅ Verified │ ⚠️ Partial (infra drift, not engine regression) │ ❌ Hard fail │ ⏳ Pending
 
-> **Shell (CLI)** and **pi.dev** (Windows, this lab session). **OpenCode + Codex** (macOS M2 Pro + Ghostty) — active production environment for design-to-code workflow, cross-platform parity confirmed. **Gemini CLI** results for 01–21 are from the original v0.4.x run; 22–34 pending a dedicated pass.
+> **Shell (CLI)** and **pi.dev** (Windows, this lab session). **VS Code** — `.vscode/mcp.json` configured (2026-06-02); test pass pending. **OpenCode + Codex** (macOS M2 Pro + Ghostty) — active production environment for design-to-code workflow, cross-platform parity confirmed. **Gemini CLI** results for 01–21 are from the original v0.4.x run; 22–34 pending a dedicated pass.
 
 ---
 
@@ -53,6 +53,7 @@ Tracks the exact component versions active when each environment channel execute
 | **Shell (CLI)** | 22–27 | `v0.5.2` | `v0.3.5` | 2026-05-30 | First run, same session |
 | **pi.dev** | 01–27 | `v0.5.2` | `v0.3.5` | 2026-05-30 | Same session as Shell — `bash` tool runs inside pi.dev |
 | **Shell (CLI)** | 27 (re-verify) | `v0.5.5` | `v0.3.5` | 2026-05-31 | REPORT_041 fixed — S27 no longer hangs |
+| **VS Code** | 01–27 | `v0.5.8` | `v0.3.7` | 2026-06-07 | Multi-root workspace pass via `.vscode/mcp.json`; S21 parity rerun now full pass (`PASS 7 / ENGINE_REGRESSION 0 / HARNESS_ERROR 0`) after Rust `--list-tools` implementation. |
 | **Gemini CLI** | 01–21 | `v0.4.3`–`v0.4.5` | `v0.3.2` | 2026-05-24 | Original validation pass |
 | **Gemini CLI** | 22–34 | — | — | ⏳ Pending | Not yet run on Gemini CLI |
 | **OpenCode + Codex** | design-to-code | `v0.5.x` | `v0.3.x` | Active | macOS M2 Pro + Ghostty — [design-to-code production workflow](https://www.luiskobayashi.com/studio/studio-of-two/use-cases/design-to-code). Cross-platform parity confirmed. |
@@ -62,8 +63,8 @@ Tracks the exact component versions active when each environment channel execute
 ## 📦 Component Versioning (Latest Verified)
 | Component | Version | Date | Note |
 | :--- | :--- | :--- | :--- |
-| **`context-pipe`** | `v0.5.7` | 2026-05-31 | Updated via lab_update.py — commit `ef0ea93` fixes REPORT_042 in `onboarding.py` template (all thresholds → 51200). |
-| **`semantic-sift`** | `v0.3.5` | 2026-05-30 | Updated via lab_update.py. |
+| **`context-pipe`** | `v0.5.8` | 2026-06-07 | Updated via lab_update.py (`cpipe 0.5.8` confirmed). |
+| **`semantic-sift`** | `v0.3.7` | 2026-06-07 | Updated via lab_update.py (`sift-core 0.3.7` confirmed). |
 | **Telemetry (ROI)** | `v0.5.0` | 2026-05-30 | Updated with context-pipe. |
 
 ---
@@ -88,3 +89,6 @@ Refer to the `bugs/` directory for full details on failures.
 
 | **#041** | Universal | `_run_mcp_node` hangs when called from module context; identical logic works as standalone function. Blocks all MCP node pipes in full pipe execution. | ✅ Closed in v0.5.5 |
 | **#042** | pi.dev | `read` threshold in pi.dev extension is 1KB; Python hook uses 50KB. v0.5.6 changelog claims fix but `onboarding.py` template unchanged — false fix. | ✅ Closed in v0.5.7 |
+| **#043** | VS Code multi-root | Repro no longer reproduces on current runtime (lazy call-time telemetry resolution + project-scoped cache keying). | ✅ Closed (2026-06-07) |
+| **#044** | Windows parity harness | Harness refactored to matrix-driven command source; stale Scenario 04 command removed; decode path hardened and labels split. | ✅ Closed (2026-06-07) |
+| **#045** | semantic-sift telemetry | Malformed telemetry JSON recovery verified (`.corrupt` backup + reinit + successful write). | ✅ Closed (2026-06-07) |
