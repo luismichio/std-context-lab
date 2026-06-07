@@ -18,3 +18,28 @@ opencode.json
 
 # Project Specific (Context-Pipe)
 .pipe_telemetry.jsonl
+
+# Local agent/editor artifacts
+.agents/
+.cache/
+.context-pipe/
+.vscode/
+.pi/
+.github/
+.git_commit_msg.txt
+
+# Local debug scratch files
+debug_hooks.py
+debug_mandates.py
+test_mcp.json
+
+# Corrupt telemetry backups
+**/.pipe_telemetry.json.corrupt.*
+
+# Scenario-generated local logs/manifests
+scenarios/22-pipe-transparency-layer/stderr_*.log
+scenarios/26-run-manifests/artifacts/run_vscode.json
+scenarios/26-run-manifests/vscode_test_manifest.json
+
+# Build outputs
+target/
