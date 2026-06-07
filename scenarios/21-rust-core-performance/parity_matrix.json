@@ -1,0 +1,51 @@
+[
+  {
+    "id": "01",
+    "name": "Protocol Basics",
+    "cwd": "../01-protocol-basics",
+    "command": "Get-Content sample.log | mcp-pipe run basics-pipe",
+    "expected_mode": "pass"
+  },
+  {
+    "id": "02",
+    "name": "Shadow Discovery",
+    "cwd": "../02-shadow-discovery",
+    "command": "mcp-pipe tool everything --list-tools",
+    "expected_mode": "pass"
+  },
+  {
+    "id": "04",
+    "name": "Core Pre-Filters",
+    "cwd": "../04-core-prefilters",
+    "command": "Get-Content noisy_app.log -Raw | mcp-pipe run log-optimizer --config pipes.json",
+    "expected_mode": "pass"
+  },
+  {
+    "id": "06",
+    "name": "A2A Handoff",
+    "cwd": "../06-a2a-handoff",
+    "command": "mcp-pipe handoff --from Researcher --to Reviewer --output 'findings'",
+    "expected_mode": "pass"
+  },
+  {
+    "id": "17",
+    "name": "Version Awareness",
+    "cwd": "../17-version-awareness",
+    "command": "mcp-pipe verify",
+    "expected_mode": "pass"
+  },
+  {
+    "id": "18",
+    "name": "Dynamic Sifting",
+    "cwd": "../18-autonomous-dynamic-sifting",
+    "command": "mcp-pipe run-dynamic '[{\"cmd\": \"grep\", \"args\": [\"needle\"]}, {\"cmd\": \"semantic-sift-cli\", \"args\": [\"semantic\"]}]' --input_file needle_in_haystack.log --allow_shell",
+    "expected_mode": "pass"
+  },
+  {
+    "id": "20",
+    "name": "Line Ranges",
+    "cwd": "../20-orchestrated-line-ranges",
+    "command": "mcp-pipe run standard-distill --input_file numbered_lines.txt --start_line 500 --end_line 510",
+    "expected_mode": "pass"
+  }
+]

@@ -1,76 +1,156 @@
+import json
 import os
+import re
 import subprocess
 import sys
+from pathlib import Path
 
-def run_parity_test(name, cmd, cwd):
-    print(f"\n========================================")
-    print(f"--- Native Parity Test: {name} ---")
-    print(f"Directory: {cwd}")
-    print(f"Command: {cmd}")
-    print(f"----------------------------------------")
-    
+
+BASE_DIR = Path(__file__).resolve().parent
+MATRIX_PATH = BASE_DIR / "parity_matrix.json"
+
+
+def _load_matrix() -> list[dict]:
+    with open(MATRIX_PATH, "r", encoding="utf-8") as f:
+        tests = json.load(f)
+    if not isinstance(tests, list) or not tests:
+        raise ValueError("parity_matrix.json must contain a non-empty array.")
+    return tests
+
+
+def _swap_mcppipe_for_cpipe(cmd: str) -> str:
     cpipe_path = os.path.abspath("../../.venv/Scripts/cpipe.exe")
-    
-    # NO ADAPTATIONS - Just swap the binary and use native PowerShell & operator
-    new_cmd = cmd
-    if new_cmd.startswith("mcp-pipe"):
-        new_cmd = f'& "{cpipe_path}" {new_cmd[8:]}'
-    elif " mcp-pipe " in new_cmd:
-        new_cmd = new_cmd.replace(" mcp-pipe ", f' & "{cpipe_path}" ')
-    elif "| mcp-pipe" in new_cmd:
-        new_cmd = new_cmd.replace("| mcp-pipe", f'| & "{cpipe_path}"')
-    elif " mcp-pipe" in new_cmd:
-         new_cmd = new_cmd.replace(" mcp-pipe", f' & "{cpipe_path}"')
+    if cmd.startswith("mcp-pipe"):
+        return f'& "{cpipe_path}" {cmd[8:]}'
+    if " mcp-pipe " in cmd:
+        return cmd.replace(" mcp-pipe ", f' & "{cpipe_path}" ')
+    if "| mcp-pipe" in cmd:
+        return cmd.replace("| mcp-pipe", f'| & "{cpipe_path}"')
+    if " mcp-pipe" in cmd:
+        return cmd.replace(" mcp-pipe", f' & "{cpipe_path}"')
+    return cmd
+
+
+def _extract_run_pipe(cmd: str) -> str | None:
+    m = re.search(r"\bmcp-pipe\s+run\s+([\w\-]+)", cmd)
+    return m.group(1) if m else None
+
+
+def _extract_config_path(cmd: str, cwd: str) -> str | None:
+    m = re.search(r"--config\s+([^\s]+)", cmd)
+    if m:
+        config_raw = m.group(1).strip("\"'")
+        return str(Path(cwd, config_raw).resolve())
+    default_cfg = Path(cwd, "pipes.json")
+    return str(default_cfg.resolve()) if default_cfg.exists() else None
+
+
+def _validate_test(test: dict, cwd: str) -> str | None:
+    if not Path(cwd).exists():
+        return f"Test cwd does not exist: {cwd}"
+
+    cmd = test["command"]
+    pipe_name = _extract_run_pipe(cmd)
+    if pipe_name:
+        config_path = _extract_config_path(cmd, cwd)
+        if not config_path or not Path(config_path).exists():
+            return f"Could not resolve config for run command: {cmd}"
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+            available = {p.get("name") for p in cfg.get("pipes", []) if isinstance(p, dict)}
+            if pipe_name not in available:
+                return f"Pipe '{pipe_name}' not found in {config_path}. Available: {sorted(available)}"
+        except Exception as e:
+            return f"Failed to validate pipe command against config: {e}"
+
+    return None
+
+
+def run_parity_test(test: dict) -> str:
+    test_id = test.get("id", "??")
+    name = test.get("name", "Unnamed")
+    cmd = test["command"]
+    cwd = str((BASE_DIR / test["cwd"]).resolve())
+    expected_mode = test.get("expected_mode", "pass")
+
+    print("\n========================================")
+    print(f"--- Native Parity Test: {test_id}: {name} ---")
+    print(f"Directory: {test['cwd']}")
+    print(f"Command: {cmd}")
+    print("----------------------------------------")
+
+    validation_error = _validate_test(test, cwd)
+    if validation_error:
+        print(f"[HARNESS_ERROR]: {validation_error}")
+        return "HARNESS_ERROR"
+
+    new_cmd = _swap_mcppipe_for_cpipe(cmd)
 
     try:
-        result = subprocess.run(["powershell", "-Command", new_cmd], capture_output=True, text=True, cwd=cwd)
+        result = subprocess.run(
+            ["powershell", "-Command", new_cmd],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            cwd=cwd,
+        )
         print(f"Exit Code: {result.returncode}")
-        
+
         if result.stdout:
             print(f"Stdout (peek): {result.stdout[:200].strip()}...")
         if result.stderr:
             print(f"Stderr (peek): {result.stderr[:200].strip()}...")
-            
-        if result.returncode == 0:
-            print(f"[PASS]: Native Parity maintained.")
-            return True
-        else:
-            print(f"[FAIL]: Feature Regression / Parity broken.")
-            return False
-            
-    except Exception as e:
-        print(f"[ERROR] executing test: {e}")
-        return False
 
-def main():
+        if result.returncode == 0:
+            print("[PASS]: Native parity maintained.")
+            return "PASS"
+
+        if expected_mode == "known_gap":
+            print("[KNOWN_GAP]: Non-zero exit expected for this test.")
+            return "KNOWN_GAP"
+
+        print("[ENGINE_REGRESSION]: Feature regression / parity broken.")
+        return "ENGINE_REGRESSION"
+
+    except UnicodeDecodeError as e:
+        print(f"[HARNESS_ERROR] Subprocess decode failure: {e}")
+        return "HARNESS_ERROR"
+    except Exception as e:
+        print(f"[HARNESS_ERROR] Unexpected harness error: {e}")
+        return "HARNESS_ERROR"
+
+
+def main() -> None:
     if sys.platform == "win32":
         import io
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
     print("Starting Context-Pipe GAUNTLET v3 (Native Rust Core v0.4.5)")
-    
-    tests = [
-        {"name": "01: Protocol Basics", "cwd": "../01-protocol-basics", "cmd": "Get-Content sample.log | mcp-pipe run basics-pipe"},
-        {"name": "02: Shadow Discovery", "cwd": "../02-shadow-discovery", "cmd": "mcp-pipe tool list --config pipes.json"},
-        {"name": "04: Core Pre-Filters", "cwd": "../04-core-prefilters", "cmd": "mcp-pipe run noisy-filter --config pipes.json --input_file noisy_app.log"},
-        {"name": "06: A2A Handoff", "cwd": "../06-a2a-handoff", "cmd": "mcp-pipe handoff --from Researcher --to Reviewer --output 'findings'"},
-        {"name": "17: Version Awareness", "cwd": "../17-version-awareness", "cmd": "mcp-pipe verify"},
-        {"name": "18: Dynamic Sifting", "cwd": "../18-autonomous-dynamic-sifting", "cmd": "mcp-pipe run-dynamic '[{\"cmd\": \"grep\", \"args\": [\"needle\"]}, {\"cmd\": \"semantic-sift-cli\", \"args\": [\"semantic\"]}]' --input_file needle_in_haystack.log --allow_shell"},
-        {"name": "20: Line Ranges", "cwd": "../20-orchestrated-line-ranges", "cmd": "mcp-pipe run standard-distill --input_file numbered_lines.txt --start_line 500 --end_line 510"}
-    ]
-    
-    results = []
-    for test in tests:
-        res = run_parity_test(test["name"], test["cmd"], test["cwd"])
-        results.append(res)
-        
-    print(f"\n========================================")
-    print(f"GAUNTLET v3 COMPLETE.")
+
+    tests = _load_matrix()
+    results = [run_parity_test(test) for test in tests]
+
+    counts = {
+        "PASS": results.count("PASS"),
+        "KNOWN_GAP": results.count("KNOWN_GAP"),
+        "ENGINE_REGRESSION": results.count("ENGINE_REGRESSION"),
+        "HARNESS_ERROR": results.count("HARNESS_ERROR"),
+    }
+
+    print("\n========================================")
+    print("GAUNTLET v3 COMPLETE.")
     print(f"Total Scenarios Tested: {len(results)}")
-    print(f"Passed: {results.count(True)}")
-    print(f"Failed: {results.count(False)}")
-    print(f"Success Rate: {(results.count(True)/len(results)*100):.1f}%")
-    print(f"========================================")
+    print(f"PASS: {counts['PASS']}")
+    print(f"KNOWN_GAP: {counts['KNOWN_GAP']}")
+    print(f"ENGINE_REGRESSION: {counts['ENGINE_REGRESSION']}")
+    print(f"HARNESS_ERROR: {counts['HARNESS_ERROR']}")
+    success_like = counts["PASS"] + counts["KNOWN_GAP"]
+    print(f"Success-Like Rate: {(success_like / len(results) * 100):.1f}%")
+    print("========================================")
+
 
 if __name__ == "__main__":
     main()

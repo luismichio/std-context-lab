@@ -56,9 +56,11 @@ All technical claims MUST be verified via two channels to ensure platform parity
 ### IDE Integration Parity
 - [ ] Test scenario execution within Cursor.
 - [ ] Test scenario execution within OpenCode.
-- [ ] Test scenario execution within VSCode.
+- [~] Test scenario execution within VSCode. (`.vscode/mcp.json` configured 2026-06-02 — test pass pending)
 
 ## ✅ Done
+
+- [x] **REPORT_044 fix 2026-06-07**: `parity_v3.py` harness hardened — subprocess decode (`utf-8`+`replace`), stale Scenario 02 command updated, `[HARNESS_ERROR]` vs `[ENGINE_REGRESSION]` labels split.
 
 - [x] **Gap tests 2026-05-30**: 
   - S13: Timeout via env var on required node; optional+condition interaction; discovered false pass in original timeout test (forever_sleep.py never sleeps); **filed REPORT_039** (node.timeout ignored by orchestrator)
